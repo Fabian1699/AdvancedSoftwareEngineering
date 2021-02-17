@@ -1,17 +1,26 @@
-package com.example.taskforce;
+package com.example.taskforce.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.taskforce.R;
+import com.example.taskforce.task.CreateAndUpdateTask;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.PersistableBundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.example.taskforce.task.CreateAndUpdateTask;
 
 import com.example.taskforce.ui.main.SectionsPagerAdapter;
 
@@ -31,9 +40,17 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getBaseContext(), CreateAndUpdateTask.class);
+                //intent.putExtra(EXTRA_MESSAGE, message);
+                startActivity(intent);
+                System.out.println();
             }
         });
+
+    }
+
+    @Override
+    public void onPostCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onPostCreate(savedInstanceState, persistentState);
     }
 }

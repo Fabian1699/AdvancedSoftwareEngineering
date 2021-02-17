@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -13,6 +15,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.taskforce.R;
+import com.example.taskforce.task.Frequency;
+import com.example.taskforce.task.Task;
+import com.example.taskforce.task.TaskObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -40,6 +48,8 @@ public class PlaceholderFragment extends Fragment {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
+
+
     }
 
     @Override
@@ -54,6 +64,19 @@ public class PlaceholderFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        List<TaskObject> data = new ArrayList<>();
+        data.add(new TaskObject(new Task("test", "test", null, Frequency.DAY)));
+        data.add(new TaskObject(new Task("schlagzeug spielen", "test", null, Frequency.DAY)));
+        data.add(new TaskObject(new Task("einkaufen", "test", null, Frequency.DAY)));
+        data.add(new TaskObject(new Task("nicolas nerven", "test", null, Frequency.DAY)));
+
+        TaskListAdapter adapter = new TaskListAdapter(getContext(), R.layout.task, data);
+        ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
+        lvDailyTasks.setAdapter(adapter);
+
+        Utility.setListViewHeightBasedOnChildren(lvDailyTasks);
+
         return root;
     }
 }

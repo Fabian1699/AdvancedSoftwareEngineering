@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".task.CreateAndUpdateTask">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimaryDark"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="13dp">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:id="@+id/taskName"
+            android:hint="Name der Aufgabe"></EditText>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:id="@+id/taskDescription"
+            android:layout_marginBottom="10dp"
+            android:hint="Beschreibung"></EditText>
+
+
+        <include layout="@layout/date_view"></include>
+        <CalendarView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:id="@+id/calendar">
+        </CalendarView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:layout_width="300dp"
+                android:background="@color/grayLight"
+                android:layout_height="50dp"
+                android:id="@+id/taskFrequency"
+                android:layout_gravity="center">
+
+            </Spinner>
+
+            <Space
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <EditText
+                android:id="@+id/customFrequency"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:inputType="none" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/taskSave"
+            android:background="?attr/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Speichern"
+            android:layout_gravity="center">
+
+        </Button>
+    </LinearLayout>
+
+</LinearLayout>
