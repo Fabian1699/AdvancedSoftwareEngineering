@@ -11,33 +11,38 @@
         android:id="@+id/taskViewProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:progress="66"
-        android:scaleY="100"
-        android:progressTint="@color/grayLight"
-        android:progressBackgroundTint="@color/yellow"
-        android:layout_weight="0" />
+        android:layout_height="68dp"
+        android:progressDrawable="@drawable/progress_bar"
+        android:layout_weight="1" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/layout_subtask">
+        android:id="@+id/layout_subtask2">
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
             android:id="@+id/taskViewCheck"
-            android:layout_height="match_parent"/>
+            android:layout_height="70dp"/>
 
         <TextView
-            android:layout_width="300dp"
+            android:layout_width="315dp"
             android:layout_margin="20dp"
             android:text ="hallo"
+            android:layout_centerInParent="true"
             android:id="@+id/taskViewName"
             android:layout_height="wrap_content"
             android:textSize="20dp"/>
 
+    </RelativeLayout>
+        <ListView
+            android:layout_width="350dp"
+            android:layout_below="@+id/layout_subtask2"
+            android:layout_alignParentRight="true"
+            android:layout_height="100dp"
+            android:id="@+id/lv_subtasks"/>
 
-    </LinearLayout>
 
 </RelativeLayout>

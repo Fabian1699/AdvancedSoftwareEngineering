@@ -52,6 +52,8 @@ public class CreateAndUpdateTask extends AppCompatActivity {
         calendar = findViewById(R.id.calendar);
         calendar.setVisibility(View.GONE);
 
+        customFrequency.setEnabled(false);
+
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_list_item_1);
         adapter.addAll(Arrays.stream(Frequency.values()).map(Frequency::getKey).collect(Collectors.toList()));
         taskFrequency.setAdapter(adapter);
@@ -79,9 +81,9 @@ public class CreateAndUpdateTask extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(adapter.getItem(position).equals(Frequency.CUSTOM.getKey())){
-                    customFrequency.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    customFrequency.setEnabled(true);
                 }else{
-                    customFrequency.setInputType(InputType.TYPE_NULL);
+                    customFrequency.setEnabled(false);
                 }
             }
 
@@ -95,5 +97,7 @@ public class CreateAndUpdateTask extends AppCompatActivity {
     private boolean save(){
         return true;
     }
+
+
 
 }
