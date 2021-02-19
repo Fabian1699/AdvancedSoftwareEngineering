@@ -3,6 +3,7 @@ package com.example.taskforce.task;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
+import com.example.taskforce.ui.main.Utility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -18,12 +19,15 @@ import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.taskforce.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,6 +39,8 @@ public class CreateAndUpdateTask extends AppCompatActivity {
     private CalendarView calendar;
     private LinearLayout dateView;
     private EditText customFrequency;
+    private Button addSubTask;
+    private ListView subTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +56,14 @@ public class CreateAndUpdateTask extends AppCompatActivity {
         dateView = findViewById(R.id.dateView);
         customFrequency = findViewById(R.id.customFrequency);
         calendar = findViewById(R.id.calendar);
+        addSubTask = findViewById(R.id.addSubTask);
+        subTasks = findViewById(R.id.createdSubTasks);
+
+
         calendar.setVisibility(View.GONE);
 
         customFrequency.setEnabled(false);
+
 
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_list_item_1);
         adapter.addAll(Arrays.stream(Frequency.values()).map(Frequency::getKey).collect(Collectors.toList()));
@@ -90,6 +101,24 @@ public class CreateAndUpdateTask extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+
+        TaskFactory factory = new TaskFactory();
+        List<String> subTaskNames = new ArrayList<>();
+        ArrayAdapter<CharSequence> subTaskAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_list_item_1);
+        subTaskAdapter.addAll(subTaskNames);
+        subTasks.setAdapter(subTaskAdapter);
+        Utility.setListViewHeightBasedOnChildren(subTasks);
+
+        addSubTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subTaskNames.add(taskDescription.getText().toString());
+                subTaskAdapter.add(taskDescription.getText().toString());
+                taskDescription.setText("");
+                subTaskAdapter.notifyDataSetChanged();
+                Utility.setListViewHeightBasedOnChildren(subTasks, 3);
             }
         });
     }

@@ -61,13 +61,6 @@ public class SubTaskListAdapter extends BaseAdapter {
             name.setText(subTask.getTaskName());
             check.setChecked(subTask.isFinished());
 
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    System.out.println();
-                }
-            });
-
             check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 private int pos = position;
 

@@ -75,10 +75,10 @@ public class PlaceholderFragment extends Fragment {
         subTasks.add(new SubTask("Pommes"));
         subTasks.add(new SubTask("Ketchup"));
         subTasks.add(new SubTask("Osterhase"));
-        TaskObject test = new TaskObject(UUID.randomUUID(), new Task("Einkaufen", "test", null, Frequency.DAY), subTasks);
-        data.add(new TaskObject(new Task("schlagzeug spielen", "test", null, Frequency.DAY)));
+        TaskObject test = new TaskObject(UUID.randomUUID(), new Task("Einkaufen", null, Frequency.DAY), subTasks);
+        data.add(new TaskObject(new Task("schlagzeug spielen", null, Frequency.DAY)));
         data.add(test);
-        data.add(new TaskObject(new Task("nicolas nerven", "test", null, Frequency.DAY)));
+        data.add(new TaskObject(new Task("nicolas nerven", null, Frequency.DAY)));
 
         TaskListAdapter adapter = new TaskListAdapter(getContext(), data);
         ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);

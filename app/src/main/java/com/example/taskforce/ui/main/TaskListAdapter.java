@@ -1,6 +1,8 @@
 package com.example.taskforce.ui.main;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -75,8 +78,34 @@ public class TaskListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View v) {
                     adapter.notifyDataSetChanged();
-                    View v2 = (View) v.getParent().getParent().getParent().getParent();
-                    v2.performClick();
+                    View parentOfListView = (View) v.getParent().getParent().getParent().getParent();
+                    parentOfListView.performClick();
+                }
+            });
+
+            check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Investierte Zeit");
+                    builder.setView(inflater.inflate(R.layout.time_spend_dialog, null));
+                    DialogInterface.OnClickListener abortListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    };
+
+                    DialogInterface.OnClickListener finishListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    };
+                    builder.setNegativeButton("abort", abortListener);
+                    builder.setPositiveButton("finish", finishListener);
+
+                    builder.create().show();
                 }
             });
 
