@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.taskforce.R;
+import com.example.taskforce.database.TaskObjectProvider;
 import com.example.taskforce.task.Frequency;
 import com.example.taskforce.task.SubTask;
 import com.example.taskforce.task.Task;
@@ -32,8 +33,10 @@ import java.util.UUID;
 public class PlaceholderFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private List<TaskObject> data = new ArrayList<>();
 
     private PageViewModel pageViewModel;
+    private TaskListAdapter adapter;
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -69,18 +72,22 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
-        List<TaskObject> data = new ArrayList<>();
+        data = new ArrayList<>();
+        data.addAll(TaskObjectProvider.getAllTaskObjects(this.getContext()));
+
+        /*
         List<SubTask> subTasks = new ArrayList<>();
         subTasks.add(new SubTask("Schnitzel"));
         subTasks.add(new SubTask("Pommes"));
         subTasks.add(new SubTask("Ketchup"));
         subTasks.add(new SubTask("Osterhase"));
         TaskObject test = new TaskObject(UUID.randomUUID(), new Task("Einkaufen", null, Frequency.DAY), subTasks);
-        data.add(new TaskObject(new Task("schlagzeug spielen", null, Frequency.DAY)));
         data.add(test);
-        data.add(new TaskObject(new Task("nicolas nerven", null, Frequency.DAY)));
 
-        TaskListAdapter adapter = new TaskListAdapter(getContext(), data);
+         */
+
+
+        adapter = new TaskListAdapter(getContext(), data);
         ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
         lvDailyTasks.setAdapter(adapter);
 
@@ -89,7 +96,7 @@ public class PlaceholderFragment extends Fragment {
         root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                adapter.notifyDataSetChanged();
+                updateTaskListView(adapter);
             }
         });
 
@@ -97,4 +104,20 @@ public class PlaceholderFragment extends Fragment {
 
         return root;
     }
+
+    private void updateTaskListView(TaskListAdapter adapter) {
+        List<TaskObject> allTaskObjects = TaskObjectProvider.getAllTaskObjects(getContext());
+        if(!data.equals(allTaskObjects)){
+            data.clear();
+            data.addAll(allTaskObjects);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        //updateTaskListView(adapter);
+        super.onResume();
+    }
+
 }

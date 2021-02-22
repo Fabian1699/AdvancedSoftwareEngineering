@@ -44,7 +44,13 @@ public class TaskFactory {
         this.subTasks = subTasks;
     }
 
-    private TaskObject build(){
+    public TaskObject build(){
         return new TaskObject(UUID.randomUUID(), new Task(taskName, targetDate, frequency), subTasks);
     }
+
+    public TaskObject build(UUID id){
+        return new TaskObject(id, new Task(taskName, targetDate, frequency), subTasks);
+    }
+
+
 }

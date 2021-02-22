@@ -3,6 +3,7 @@ package com.example.taskforce.task;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 
+import com.example.taskforce.database.TaskObjectProvider;
 import com.example.taskforce.ui.main.Utility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -25,6 +26,8 @@ import android.widget.TextView;
 
 import com.example.taskforce.R;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +44,8 @@ public class CreateAndUpdateTask extends AppCompatActivity {
     private EditText customFrequency;
     private Button addSubTask;
     private ListView subTasks;
+
+    List<String> subTaskNames = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +110,6 @@ public class CreateAndUpdateTask extends AppCompatActivity {
         });
 
         TaskFactory factory = new TaskFactory();
-        List<String> subTaskNames = new ArrayList<>();
         ArrayAdapter<CharSequence> subTaskAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_list_item_1);
         subTaskAdapter.addAll(subTaskNames);
         subTasks.setAdapter(subTaskAdapter);
@@ -124,6 +128,19 @@ public class CreateAndUpdateTask extends AppCompatActivity {
     }
 
     private boolean save(){
+        TaskFactory fac = new TaskFactory();
+        fac.setTaskName(taskName.getText().toString());
+        try {
+            Frequency freq = Frequency.fromKey((String) taskFrequency.getAdapter().getItem(taskFrequency.getSelectedItemPosition()));
+            fac.setFrequency(freq);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        fac.setTargetDate(Date.from(Instant.ofEpochMilli(calendar.getDate())));
+        fac.setSubTasks(subTaskNames.stream().map(name -> new SubTask(name)).collect(Collectors.toList()));
+        TaskObjectProvider.saveTaskToDatabase(this, fac.build());
         return true;
     }
 

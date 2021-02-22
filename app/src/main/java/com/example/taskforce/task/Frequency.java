@@ -17,4 +17,13 @@ public enum Frequency {
     public String getKey(){
         return this.key;
     }
+
+    public static Frequency fromKey(String key) throws Exception {
+        for(Frequency freq: Frequency.values()){
+            if(freq.getKey().equals(key)){
+                return freq;
+            }
+        }
+        throw new Exception("Frequency key not found");
+    }
 }

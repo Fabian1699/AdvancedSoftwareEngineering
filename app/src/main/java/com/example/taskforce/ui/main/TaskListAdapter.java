@@ -3,6 +3,7 @@ package com.example.taskforce.ui.main;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.DataSetObserver;
 import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.IdRes;
 
 import com.example.taskforce.R;
+import com.example.taskforce.database.TaskObjectProvider;
 import com.example.taskforce.task.SubTask;
 import com.example.taskforce.task.TaskObject;
 
@@ -99,7 +101,12 @@ public class TaskListAdapter extends BaseAdapter {
                     DialogInterface.OnClickListener finishListener = new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            View taskLayout =(View) buttonView.getParent().getParent();
+                            ListView taskListView = (ListView) taskLayout.getParent();
+                            TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
+                            obj.finishTask();
+                            TaskObjectProvider.deleteTaskFromDatabase(context, obj.getId());
+                            ((View)taskListView.getParent().getParent().getParent()).callOnClick();
                         }
                     };
                     builder.setNegativeButton("abort", abortListener);
@@ -123,8 +130,14 @@ public class TaskListAdapter extends BaseAdapter {
         return 0;
     }
 
+
     @Override
     public void notifyDataSetChanged() {
+        if(views.size()!=data.size()){
+            super.notifyDataSetChanged();
+            return;
+        }
+
         for(int i=0; i<data.size(); i++){
             TaskObject taskObj = data.get(i);
             View v = views.get(taskObj.getId());

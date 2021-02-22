@@ -8,11 +8,18 @@ import java.util.UUID;
 public class TaskObject {
     private final UUID id;
     private final Task task;
+    private boolean isFinished = false;
     private List<SubTask> subTasks;
 
     public TaskObject(UUID id, Task task, List<SubTask> subTasks){
         this.id = id;
         this.task=task;
+        this.subTasks = subTasks;
+    }
+    public TaskObject(UUID id, Task task, boolean isFinished, List<SubTask> subTasks){
+        this.id = id;
+        this.task=task;
+        this.isFinished = isFinished;
         this.subTasks = subTasks;
     }
 
@@ -37,6 +44,14 @@ public class TaskObject {
 
     public void replaceSubTask(SubTask oldSub, SubTask newSub){
         subTasks.set(subTasks.indexOf(oldSub), newSub);
+    }
+
+    public void finishTask(){
+        this.isFinished = true;
+    }
+
+    public boolean isFinished(){
+        return isFinished;
     }
 
     @Override
