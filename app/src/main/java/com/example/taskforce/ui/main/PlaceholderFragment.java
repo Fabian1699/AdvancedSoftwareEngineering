@@ -2,11 +2,8 @@ package com.example.taskforce.ui.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,15 +14,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.taskforce.R;
-import com.example.taskforce.database.TaskObjectProvider;
-import com.example.taskforce.task.Frequency;
-import com.example.taskforce.task.SubTask;
-import com.example.taskforce.task.Task;
+import com.example.taskforce.database.TaskObjectDAO;
 import com.example.taskforce.task.TaskObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -73,7 +66,7 @@ public class PlaceholderFragment extends Fragment {
         });
 
         data = new ArrayList<>();
-        data.addAll(TaskObjectProvider.getAllTaskObjects(this.getContext()));
+        data.addAll(TaskObjectDAO.getAllTaskObjects(this.getContext()));
 
         /*
         List<SubTask> subTasks = new ArrayList<>();
@@ -106,7 +99,7 @@ public class PlaceholderFragment extends Fragment {
     }
 
     private void updateTaskListView(TaskListAdapter adapter) {
-        List<TaskObject> allTaskObjects = TaskObjectProvider.getAllTaskObjects(getContext());
+        List<TaskObject> allTaskObjects = TaskObjectDAO.getAllTaskObjects(getContext());
         if(!data.equals(allTaskObjects)){
             data.clear();
             data.addAll(allTaskObjects);
@@ -116,7 +109,7 @@ public class PlaceholderFragment extends Fragment {
 
     @Override
     public void onResume() {
-        //updateTaskListView(adapter);
+        updateTaskListView(adapter);
         super.onResume();
     }
 

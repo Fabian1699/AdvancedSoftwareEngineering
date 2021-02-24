@@ -57,14 +57,17 @@ public class TaskObject {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof TaskObject)) return false;
         TaskObject that = (TaskObject) o;
-        return Objects.equals(id, that.id);
+        return isFinished == that.isFinished &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(task, that.task) &&
+                Objects.equals(subTasks, that.subTasks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, task, isFinished, subTasks);
     }
 
     public UUID getId() {

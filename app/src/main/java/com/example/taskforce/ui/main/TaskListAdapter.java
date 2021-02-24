@@ -3,12 +3,9 @@ package com.example.taskforce.ui.main;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.DataSetObserver;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -16,14 +13,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.IdRes;
-
 import com.example.taskforce.R;
-import com.example.taskforce.database.TaskObjectProvider;
+import com.example.taskforce.database.DatabaseHelper;
+import com.example.taskforce.database.TaskObjectDAO;
 import com.example.taskforce.task.SubTask;
 import com.example.taskforce.task.TaskObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +74,7 @@ public class TaskListAdapter extends BaseAdapter {
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    adapter.notifyDataSetChanged();
+                    //adapter.notifyDataSetChanged();
                     View parentOfListView = (View) v.getParent().getParent().getParent().getParent();
                     parentOfListView.performClick();
                 }
@@ -105,7 +100,8 @@ public class TaskListAdapter extends BaseAdapter {
                             ListView taskListView = (ListView) taskLayout.getParent();
                             TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
                             obj.finishTask();
-                            TaskObjectProvider.deleteTaskFromDatabase(context, obj.getId());
+                            TaskObjectDAO.updateTask(context, obj);
+                            TaskObjectDAO.deleteTaskFromDatabase(context, obj.getId());
                             ((View)taskListView.getParent().getParent().getParent()).callOnClick();
                         }
                     };
@@ -133,6 +129,7 @@ public class TaskListAdapter extends BaseAdapter {
 
     @Override
     public void notifyDataSetChanged() {
+
         if(views.size()!=data.size()){
             super.notifyDataSetChanged();
             return;
@@ -148,6 +145,8 @@ public class TaskListAdapter extends BaseAdapter {
                 CheckBox check = v.findViewById(R.id.taskViewCheck);
                 ProgressBar progress = v.findViewById(R.id.taskViewProgress);
                 ListView lvSubTasks = v.findViewById(R.id.lv_subtasks);
+
+                //lvSubTasks.setAdapter(new SubTaskListAdapter(context, taskObj));
                 name.setText(taskObj.getTask().getName());
                 progress.setProgress(calcProgressForTask(taskObj), true);
             }

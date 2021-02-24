@@ -1,28 +1,22 @@
 package com.example.taskforce.task;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 
-import com.example.taskforce.database.TaskObjectProvider;
+import com.example.taskforce.database.TaskObjectDAO;
 import com.example.taskforce.ui.main.Utility;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.text.InputType;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.taskforce.R;
 
@@ -32,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CreateAndUpdateTask extends AppCompatActivity {
     private EditText taskName;
@@ -140,7 +133,7 @@ public class CreateAndUpdateTask extends AppCompatActivity {
 
         fac.setTargetDate(Date.from(Instant.ofEpochMilli(calendar.getDate())));
         fac.setSubTasks(subTaskNames.stream().map(name -> new SubTask(name)).collect(Collectors.toList()));
-        TaskObjectProvider.saveTaskToDatabase(this, fac.build());
+        TaskObjectDAO.saveTaskToDatabase(this, fac.build());
         return true;
     }
 

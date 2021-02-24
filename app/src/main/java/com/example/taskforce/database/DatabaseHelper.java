@@ -97,6 +97,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
+    public void updateTaskFinished(String taskId, boolean isFinished){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME_TASK + " SET " + COL_FINISHED +
+                " = '" + String.valueOf(isFinished) + "' WHERE " + COL_ID + " = '" + taskId + "'";
+        db.execSQL(query);
+    }
+
+    public void updateSubTaskFinished(String taskId, String name, boolean isFinished){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE_NAME_SUBTASK + " SET " + COL_FINISHED +
+                " = '" + String.valueOf(isFinished) + "' WHERE " + COL_ID + " = '" + taskId + "'"
+        + " AND " + COL_NAME + " = '" + name + "'";
+        db.execSQL(query);
+    }
+
     /*
     public Cursor getItemID(String name){
         SQLiteDatabase db = this.getWritableDatabase();

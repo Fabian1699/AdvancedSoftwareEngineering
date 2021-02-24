@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.taskforce.R;
+import com.example.taskforce.database.TaskObjectDAO;
 import com.example.taskforce.task.SubTask;
 import com.example.taskforce.task.TaskObject;
 
@@ -68,9 +69,10 @@ public class SubTaskListAdapter extends BaseAdapter {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     SubTask sub = data.getSubTasks().get(pos);
                     if(isChecked){
-                        data.replaceSubTask(sub, sub.finish());
+                        SubTask subFinished = sub.finish();
+                        TaskObjectDAO.updateSubTask(context, data.getId(), subFinished);
                     }else{
-                        data.replaceSubTask(sub, new SubTask(sub.getTaskName()));
+                        TaskObjectDAO.updateSubTask(context, data.getId(), new SubTask(sub.getTaskName()));
                     }
                     View listViewParent = ((View) buttonView.getParent().getParent().getParent());
                     listViewParent.callOnClick();
@@ -79,26 +81,5 @@ public class SubTaskListAdapter extends BaseAdapter {
             views.put(subTask.getTaskName(), v);
         }
         return v;
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        List<SubTask> subTasks = data.getSubTasks();
-        if(data.getSubTasks().size() == views.size()) {
-            for (SubTask subTask : subTasks) {
-                View v = views.get(subTask.getTaskName());
-                if(v==null){
-                    super.notifyDataSetChanged();
-                    break;
-                }else{
-                    TextView name = v.findViewById(R.id.subtaskName);
-                    CheckBox check = v.findViewById(R.id.subtaskCheck);
-                    name.setText(subTask.getTaskName());
-                    check.setChecked(subTask.isFinished());
-                }
-            }
-        }else{
-            super.notifyDataSetChanged();
-        }
     }
 }

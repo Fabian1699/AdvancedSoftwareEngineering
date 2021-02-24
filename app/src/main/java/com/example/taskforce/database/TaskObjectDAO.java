@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TaskObjectProvider {
+public class TaskObjectDAO {
 
     public static List<TaskObject> getAllTaskObjects(Context context){
         List<TaskObject> taskObjects = new ArrayList<>();
@@ -51,6 +51,16 @@ public class TaskObjectProvider {
             worked &= dbHelper.addSubTask(taskObject.getId().toString(), sub);
         }
         return worked;
+    }
+
+    public static void updateTask(Context context, TaskObject taskObject){
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        dbHelper.updateTaskFinished(taskObject.getId().toString(), taskObject.isFinished());
+    }
+
+    public static void updateSubTask(Context context, UUID taskId, SubTask subTask){
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        dbHelper.updateSubTaskFinished(taskId.toString(), subTask.getTaskName(), subTask.isFinished());
     }
 
     public static void deleteTaskFromDatabase(Context context, UUID id){
