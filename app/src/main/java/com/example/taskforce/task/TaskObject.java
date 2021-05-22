@@ -1,6 +1,7 @@
 package com.example.taskforce.task;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -9,30 +10,40 @@ public class TaskObject {
     private final UUID id;
     private final Task task;
     private boolean isFinished = false;
+    private Date finishDate;
+    private double timeSpentMinutes;
     private List<SubTask> subTasks;
+
+
+    public TaskObject(UUID id, Task task, Date finishDate, boolean isFinished, double timeSpentMinutes, List<SubTask> subTasks){
+        this.id = id;
+        this.task=task;
+        this.finishDate = finishDate;
+        this.isFinished = isFinished;
+        this.timeSpentMinutes = timeSpentMinutes;
+        this.subTasks = subTasks;
+    }
 
     public TaskObject(UUID id, Task task, List<SubTask> subTasks){
         this.id = id;
         this.task=task;
-        this.subTasks = subTasks;
-    }
-    public TaskObject(UUID id, Task task, boolean isFinished, List<SubTask> subTasks){
-        this.id = id;
-        this.task=task;
-        this.isFinished = isFinished;
+        this.finishDate = task.getTargetDate();
+        this.isFinished = false;
+        this.timeSpentMinutes = 0;
         this.subTasks = subTasks;
     }
 
     public TaskObject(Task task){
         this.id=UUID.randomUUID();
         this.task=task;
+        this.finishDate = task.getTargetDate();
+        this.timeSpentMinutes = 0;
         this.subTasks = new ArrayList<>();
     }
 
     public void addSubTask(SubTask subTask){
         this.subTasks.add(subTask);
     }
-
 
     public Task getTask() {
         return task;
@@ -46,7 +57,12 @@ public class TaskObject {
         subTasks.set(subTasks.indexOf(oldSub), newSub);
     }
 
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
     public void finishTask(){
+        this.finishDate = new Date(System.currentTimeMillis());
         this.isFinished = true;
     }
 
@@ -56,6 +72,7 @@ public class TaskObject {
 
     @Override
     public boolean equals(Object o) {
+        //TODO
         if (this == o) return true;
         if (!(o instanceof TaskObject)) return false;
         TaskObject that = (TaskObject) o;
@@ -66,6 +83,7 @@ public class TaskObject {
     }
 
     @Override
+    //TODO
     public int hashCode() {
         return Objects.hash(id, task, isFinished, subTasks);
     }

@@ -1,9 +1,12 @@
-package com.example.taskforce.task;
+package com.example.taskforce.activity;
 
 import android.os.Bundle;
 
 import com.example.taskforce.database.TaskObjectDAO;
-import com.example.taskforce.ui.main.Utility;
+import com.example.taskforce.task.Frequency;
+import com.example.taskforce.task.SubTask;
+import com.example.taskforce.task.TaskFactory;
+import com.example.taskforce.ui.main.ListViewSizeUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CreateAndUpdateTask extends AppCompatActivity {
+public class CreateTaskActivity extends AppCompatActivity {
     private EditText taskName;
     private EditText taskDescription;
     private Spinner taskFrequency;
@@ -106,16 +109,18 @@ public class CreateAndUpdateTask extends AppCompatActivity {
         ArrayAdapter<CharSequence> subTaskAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_list_item_1);
         subTaskAdapter.addAll(subTaskNames);
         subTasks.setAdapter(subTaskAdapter);
-        Utility.setListViewHeightBasedOnChildren(subTasks);
+        ListViewSizeUtil.setListViewHeightBasedOnChildren(subTasks);
 
         addSubTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subTaskNames.add(taskDescription.getText().toString());
-                subTaskAdapter.add(taskDescription.getText().toString());
-                taskDescription.setText("");
-                subTaskAdapter.notifyDataSetChanged();
-                Utility.setListViewHeightBasedOnChildren(subTasks, 3);
+                if(!taskDescription.getText().toString().equals("")) {
+                    subTaskNames.add(taskDescription.getText().toString());
+                    subTaskAdapter.add(taskDescription.getText().toString());
+                    taskDescription.setText("");
+                    subTaskAdapter.notifyDataSetChanged();
+                    ListViewSizeUtil.setListViewHeightBasedOnChildren(subTasks, 3);
+                }
             }
         });
     }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.example.taskforce.task.Frequency;
 import com.example.taskforce.task.SubTask;
+import com.example.taskforce.task.Task;
 import com.example.taskforce.task.TaskFactory;
 import com.example.taskforce.task.TaskObject;
 
@@ -12,10 +13,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class TaskObjectDAO {
+    private final Context context;
 
-    public static List<TaskObject> getAllTaskObjects(Context context){
+    public TaskObjectDAO(Context context){
+        this.context=context;
+    }
+
+    public List<TaskObject> getAllTaskObjects(){
         List<TaskObject> taskObjects = new ArrayList<>();
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         Cursor cursor = dbHelper.getTask(null);
@@ -26,11 +34,13 @@ public class TaskObjectDAO {
             fac.setTaskName(cursor.getString(1));
             try{
                 fac.setTargetDate(new SimpleDateFormat("yyyy-MM-dd").parse(cursor.getString(2)));
-                fac.setFrequency(Frequency.fromKey(cursor.getString(3)));
+                fac.setFinishDate(new SimpleDateFormat("yyyy-MM-dd").parse(cursor.getString(3)));
+                fac.setFrequency(Frequency.fromKey(cursor.getString(4)));
             }catch (Exception e){
                 System.out.println(e);
                 break;
             }
+            fac.setFinished(Boolean.valueOf(cursor.getString(5)));
 
             Cursor subCursor = dbHelper.getSubTasks(objId.toString());
             while (subCursor.moveToNext()){
@@ -44,26 +54,47 @@ public class TaskObjectDAO {
         return taskObjects;
     }
 
-    public static boolean saveTaskToDatabase(Context context, TaskObject taskObject){
+    public List<TaskObject> getAllOpenTasks(){
+        return getAllTaskObjects().stream()//
+                    .filter(task -> !task.isFinished())//
+                    .collect(Collectors.toList());
+    }
+
+    public List<TaskObject> getAllFinishedTasks(){
+        return getAllTaskObjects().stream()//
+                .filter(TaskObject::isFinished)//
+                .collect(Collectors.toList());
+    }
+
+
+    public boolean saveTaskToDatabase(TaskObject taskObject){
         DatabaseHelper dbHelper = new DatabaseHelper(context);
-        boolean worked = dbHelper.addTask(taskObject.getId().toString(), taskObject.getTask(), taskObject.isFinished());
+        Task task = taskObject.getTask();
+        boolean worked = dbHelper.addTask(
+                taskObject.getId().toString(),
+                task.getName(),
+                new SimpleDateFormat("yyyy-MM-dd").format(task.getTargetDate()),
+                new SimpleDateFormat("yyyy-MM-dd").format(taskObject.getFinishDate()),
+                task.getFrequency().getKey(),
+                taskObject.isFinished());
+
         for(SubTask sub: taskObject.getSubTasks()){
             worked &= dbHelper.addSubTask(taskObject.getId().toString(), sub);
         }
         return worked;
     }
 
-    public static void updateTask(Context context, TaskObject taskObject){
+    public void updateTask(TaskObject taskObject){
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.updateTaskFinished(taskObject.getId().toString(), taskObject.isFinished());
     }
 
-    public static void updateSubTask(Context context, UUID taskId, SubTask subTask){
+    public void updateSubTask(UUID taskId, SubTask subTask){
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.updateSubTaskFinished(taskId.toString(), subTask.getTaskName(), subTask.isFinished());
     }
 
-    public static void deleteTaskFromDatabase(Context context, UUID id){
+    public void deleteTaskFromDatabase(UUID id){
         DatabaseHelper dbHelper = new DatabaseHelper(context);
         dbHelper.deleteTask(id.toString());
     }

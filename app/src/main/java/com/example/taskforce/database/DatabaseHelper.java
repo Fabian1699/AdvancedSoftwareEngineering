@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 
 import com.example.taskforce.task.SubTask;
 import com.example.taskforce.task.Task;
-import com.example.taskforce.task.TaskObject;
 
 import java.text.SimpleDateFormat;
 
@@ -21,13 +20,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_NAME_SUBTASK = "subtask_table";
     private static final String COL_NAME = "name";
     private static final String COL_ID = "ID";
-    private static final String COL_DATE = "date";
+    private static final String COL_TARGET_DATE = "target_date";
+    private static final String COL_FINISH_DATE = "finish_date";
     private static final String COL_FREQUENCY = "frequency";
     private static final String COL_FINISHED = "finished";
 
 
     public DatabaseHelper(@Nullable Context context) {
-        super(context, TABLE_NAME_TASK, null, 1);
+        super(context, TABLE_NAME_TASK, null, 2);
     }
 
     @Override
@@ -35,7 +35,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String createTaskTable = "CREATE TABLE " + TABLE_NAME_TASK + " ("
                 + COL_ID + " TEXT PRIMARY KEY, "
                 + COL_NAME + " TEXT, "
-                + COL_DATE + " TEXT, "
+                + COL_TARGET_DATE + " TEXT, "
+                + COL_FINISH_DATE + " TEXT, "
                 + COL_FREQUENCY + " TEXT, "
                 + COL_FINISHED + " TEXT "
         + ")";
@@ -62,13 +63,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE " + TABLE_NAME_SUBTASK);
     }
 
-    public boolean addTask(String taskObjectId, Task task, boolean isFinished){
+    public boolean addTask(String taskObjectId, String taskName, String targetDate, String finishDate, String frequency, boolean isFinished){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_ID, taskObjectId);
-        contentValues.put(COL_NAME, task.getName());
-        contentValues.put(COL_DATE, new SimpleDateFormat("yyyy-MM-dd").format(task.getTargetDate()));
-        contentValues.put(COL_FREQUENCY, task.getFrequency().getKey());
+        contentValues.put(COL_NAME, taskName);
+        contentValues.put(COL_TARGET_DATE, targetDate);
+        contentValues.put(COL_FINISH_DATE, finishDate);
+        contentValues.put(COL_FREQUENCY, frequency);
         contentValues.put(COL_FINISHED, String.valueOf(isFinished));
 
         return db.insert(TABLE_NAME_TASK, null, contentValues) !=-1;
@@ -111,26 +113,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         + " AND " + COL_NAME + " = '" + name + "'";
         db.execSQL(query);
     }
-
-    /*
-    public Cursor getItemID(String name){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + COL1 + " FROM " + TABLE_NAME +
-                " WHERE " + COL2 + " = '" + name + "'";
-        Cursor data = db.rawQuery(query, null);
-        return data;
-    }
-
-    public void updateName(String newName, int id, String oldName){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE_NAME + " SET " + COL2 +
-                " = '" + newName + "' WHERE " + COL1 + " = '" + id + "'" +
-                " AND " + COL2 + " = '" + oldName + "'";
-        Log.d(TAG, "updateName: query: " + query);
-        Log.d(TAG, "updateName: Setting name to " + newName);
-        db.execSQL(query);
-    }
-    */
 
     public void deleteTask(String id){
         SQLiteDatabase db = this.getWritableDatabase();

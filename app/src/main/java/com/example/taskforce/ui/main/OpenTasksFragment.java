@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends Fragment {
+public class OpenTasksFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     private List<TaskObject> data = new ArrayList<>();
@@ -31,8 +31,8 @@ public class PlaceholderFragment extends Fragment {
     private PageViewModel pageViewModel;
     private TaskListAdapter adapter;
 
-    public static PlaceholderFragment newInstance(int index) {
-        PlaceholderFragment fragment = new PlaceholderFragment();
+    public static OpenTasksFragment newInstance(int index) {
+        OpenTasksFragment fragment = new OpenTasksFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);
@@ -48,8 +48,6 @@ public class PlaceholderFragment extends Fragment {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
-
-
     }
 
     @Override
@@ -65,20 +63,7 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
-        data = new ArrayList<>();
-        data.addAll(TaskObjectDAO.getAllTaskObjects(this.getContext()));
-
-        /*
-        List<SubTask> subTasks = new ArrayList<>();
-        subTasks.add(new SubTask("Schnitzel"));
-        subTasks.add(new SubTask("Pommes"));
-        subTasks.add(new SubTask("Ketchup"));
-        subTasks.add(new SubTask("Osterhase"));
-        TaskObject test = new TaskObject(UUID.randomUUID(), new Task("Einkaufen", null, Frequency.DAY), subTasks);
-        data.add(test);
-
-         */
-
+        data.addAll(getTasksToShow());
 
         adapter = new TaskListAdapter(getContext(), data);
         ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
@@ -90,21 +75,30 @@ public class PlaceholderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 updateTaskListView(adapter);
+                ListViewSizeUtil.setListViewHeightBasedOnChildren(lvDailyTasks);
             }
         });
 
-        Utility.setListViewHeightBasedOnChildren(lvDailyTasks);
+        ListViewSizeUtil.setListViewHeightBasedOnChildren(lvDailyTasks);
 
         return root;
     }
 
+    private List<TaskObject> getTasksToShow(){
+        if(getArguments().getInt(ARG_SECTION_NUMBER)==1){
+            return TaskObjectDAO.getAllOpenTasks(getContext());
+        }
+        return TaskObjectDAO.getAllFinishedTasks(getContext());
+    }
+
     private void updateTaskListView(TaskListAdapter adapter) {
-        List<TaskObject> allTaskObjects = TaskObjectDAO.getAllTaskObjects(getContext());
-        if(!data.equals(allTaskObjects)){
+        List<TaskObject> tasks = getTasksToShow();
+        if(!data.equals(tasks)){
             data.clear();
-            data.addAll(allTaskObjects);
+            data.addAll(tasks);
             adapter.notifyDataSetChanged();
         }
+
     }
 
     @Override
