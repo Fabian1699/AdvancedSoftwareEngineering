@@ -1,6 +1,6 @@
-package com.example.taskforce.application;
+package com.example.taskforce.domain.statistics;
 
-import com.example.taskforce.adapters.TaskObjectDAO;
+import com.example.taskforce.adapters.database.TaskObjectDAO;
 import com.example.taskforce.domain.statistics.StatisticTimeSpanCollection;
 import com.example.taskforce.domain.task.TaskObject;
 
@@ -8,10 +8,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StatisticGenerator {
+public class StatisticService {
     TaskObjectDAO taskObjectDAO;
 
-    public StatisticGenerator(TaskObjectDAO dao){
+    public StatisticService(TaskObjectDAO dao){
         taskObjectDAO = dao;
     }
 

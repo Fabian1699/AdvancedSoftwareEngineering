@@ -1,4 +1,4 @@
-package com.example.taskforce.plugins.ui.util.activity;
+package com.example.taskforce.plugins.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;

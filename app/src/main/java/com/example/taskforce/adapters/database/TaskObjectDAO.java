@@ -1,14 +1,12 @@
-package com.example.taskforce.adapters;
+package com.example.taskforce.adapters.database;
 
-import android.database.Cursor;
-
+import com.example.taskforce.application.ITaskObjectDAO;
 import com.example.taskforce.application.TaskFactory;
 import com.example.taskforce.domain.task.Frequency;
 import com.example.taskforce.domain.task.SubTask;
 import com.example.taskforce.domain.task.Task;
 import com.example.taskforce.domain.task.TaskObject;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class TaskObjectDAO {
+public class TaskObjectDAO implements ITaskObjectDAO {
     private final IDatabaseHelper dbHelper;
 
     public TaskObjectDAO(IDatabaseHelper databaseHelper){

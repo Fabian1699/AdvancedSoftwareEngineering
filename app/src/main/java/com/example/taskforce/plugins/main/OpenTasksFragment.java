@@ -14,11 +14,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.taskforce.R;
-import com.example.taskforce.adapters.TaskObjectDAO;
+import com.example.taskforce.adapters.database.TaskObjectDAO;
 import com.example.taskforce.domain.task.TaskObject;
 import com.example.taskforce.adapters.TaskListAdapter;
 import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
-import com.example.taskforce.plugins.ui.util.viewmodel.PageViewModel;
+import com.example.taskforce.plugins.ui.viewmodel.PageViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

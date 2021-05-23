@@ -1,8 +1,8 @@
-package com.example.taskforce.plugins.ui.util.activity;
+package com.example.taskforce.plugins.ui.activity;
 
 import android.os.Bundle;
 
-import com.example.taskforce.adapters.TaskObjectDAO;
+import com.example.taskforce.adapters.database.TaskObjectDAO;
 import com.example.taskforce.domain.task.Frequency;
 import com.example.taskforce.domain.task.SubTask;
 import com.example.taskforce.application.TaskFactory;

@@ -1,6 +1,4 @@
-package com.example.taskforce.adapters;
-
-import com.example.taskforce.domain.task.Frequency;
+package com.example.taskforce.adapters.database;
 
 public enum TaskObjectValues {
     NAME("name"),

@@ -1,4 +1,4 @@
-package com.example.taskforce.plugins.ui.util.viewmodel;
+package com.example.taskforce.plugins.ui.viewmodel;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

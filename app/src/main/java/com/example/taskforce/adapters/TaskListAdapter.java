@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.taskforce.R;
+import com.example.taskforce.adapters.database.TaskObjectDAO;
 import com.example.taskforce.domain.task.SubTask;
 import com.example.taskforce.domain.task.TaskObject;
 import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;

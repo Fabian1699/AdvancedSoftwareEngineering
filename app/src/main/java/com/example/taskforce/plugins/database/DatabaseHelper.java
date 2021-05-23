@@ -9,18 +9,14 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.example.taskforce.adapters.IDatabaseHelper;
-import com.example.taskforce.adapters.TaskObjectValues;
-import com.example.taskforce.application.TaskFactory;
-import com.example.taskforce.domain.task.Frequency;
+import com.example.taskforce.adapters.database.IDatabaseHelper;
+import com.example.taskforce.adapters.database.TaskObjectValues;
 import com.example.taskforce.domain.task.SubTask;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper {
     private static final String TAG = "DatebaseHelper";

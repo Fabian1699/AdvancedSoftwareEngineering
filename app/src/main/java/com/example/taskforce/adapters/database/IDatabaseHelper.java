@@ -1,9 +1,4 @@
-package com.example.taskforce.adapters;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+package com.example.taskforce.adapters.database;
 
 import com.example.taskforce.domain.task.SubTask;
 
