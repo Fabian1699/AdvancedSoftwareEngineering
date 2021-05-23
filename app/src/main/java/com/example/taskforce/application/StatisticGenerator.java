@@ -1,7 +1,8 @@
-package com.example.taskforce.statistics;
+package com.example.taskforce.application;
 
-import com.example.taskforce.database.TaskObjectDAO;
-import com.example.taskforce.task.TaskObject;
+import com.example.taskforce.adapters.TaskObjectDAO;
+import com.example.taskforce.domain.statistics.StatisticTimeSpanCollection;
+import com.example.taskforce.domain.task.TaskObject;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,12 +20,6 @@ public class StatisticGenerator {
         List<TaskObject> finishedTasks = taskObjectDAO.getAllFinishedTasks().stream()//
             .sorted(new TaskComapartor())//
             .collect(Collectors.toList());
-
-
-
-
-
-
 
         return new StatisticTimeSpanCollection();
     }

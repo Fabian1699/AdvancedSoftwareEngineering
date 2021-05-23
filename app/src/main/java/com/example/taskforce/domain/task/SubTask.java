@@ -1,4 +1,4 @@
-package com.example.taskforce.task;
+package com.example.taskforce.domain.task;
 
 import java.util.Objects;
 

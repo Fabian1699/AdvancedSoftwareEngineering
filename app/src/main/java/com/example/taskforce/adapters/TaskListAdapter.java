@@ -1,10 +1,9 @@
-package com.example.taskforce.ui.main;
+package com.example.taskforce.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,9 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.taskforce.R;
-import com.example.taskforce.database.TaskObjectDAO;
-import com.example.taskforce.task.SubTask;
-import com.example.taskforce.task.TaskObject;
+import com.example.taskforce.domain.task.SubTask;
+import com.example.taskforce.domain.task.TaskObject;
+import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
 
 import java.util.HashMap;
 import java.util.List;

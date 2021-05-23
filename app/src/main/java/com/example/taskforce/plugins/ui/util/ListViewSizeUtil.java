@@ -1,4 +1,4 @@
-package com.example.taskforce.ui.main;
+package com.example.taskforce.plugins.ui.util;
 
 import android.view.View;
 import android.view.ViewGroup;

@@ -1,6 +1,4 @@
-package com.example.taskforce.ui.main;
-
-import android.widget.ListView;
+package com.example.taskforce.plugins.ui.util.viewmodel;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

@@ -1,4 +1,4 @@
-package com.example.taskforce.task;
+package com.example.taskforce.domain.task;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,13 +9,13 @@ import java.util.UUID;
 public class TaskObject {
     private final UUID id;
     private final Task task;
+    private List<SubTask> subTasks;
     private boolean isFinished = false;
     private Date finishDate;
-    private double timeSpentMinutes;
-    private List<SubTask> subTasks;
+    private int timeSpentMinutes;
 
 
-    public TaskObject(UUID id, Task task, Date finishDate, boolean isFinished, double timeSpentMinutes, List<SubTask> subTasks){
+    public TaskObject(UUID id, Task task, Date finishDate, boolean isFinished, int timeSpentMinutes, List<SubTask> subTasks){
         this.id = id;
         this.task=task;
         this.finishDate = finishDate;
@@ -51,6 +51,10 @@ public class TaskObject {
 
     public List<SubTask> getSubTasks() {
         return subTasks;
+    }
+
+    public int getTimeSpentMinutes() {
+        return timeSpentMinutes;
     }
 
     public void replaceSubTask(SubTask oldSub, SubTask newSub){

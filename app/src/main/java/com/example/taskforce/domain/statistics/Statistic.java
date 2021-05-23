@@ -1,4 +1,4 @@
-package com.example.taskforce.statistics;
+package com.example.taskforce.domain.statistics;
 
 public class Statistic {
     private String taskName;

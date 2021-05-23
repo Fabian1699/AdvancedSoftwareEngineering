@@ -1,12 +1,12 @@
-package com.example.taskforce.activity;
+package com.example.taskforce.plugins.ui.util.activity;
 
 import android.os.Bundle;
 
-import com.example.taskforce.database.TaskObjectDAO;
-import com.example.taskforce.task.Frequency;
-import com.example.taskforce.task.SubTask;
-import com.example.taskforce.task.TaskFactory;
-import com.example.taskforce.ui.main.ListViewSizeUtil;
+import com.example.taskforce.adapters.TaskObjectDAO;
+import com.example.taskforce.domain.task.Frequency;
+import com.example.taskforce.domain.task.SubTask;
+import com.example.taskforce.application.TaskFactory;
+import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -138,10 +138,9 @@ public class CreateTaskActivity extends AppCompatActivity {
 
         fac.setTargetDate(Date.from(Instant.ofEpochMilli(calendar.getDate())));
         fac.setSubTasks(subTaskNames.stream().map(name -> new SubTask(name)).collect(Collectors.toList()));
-        TaskObjectDAO.saveTaskToDatabase(this, fac.build());
-        return true;
+
+
+        return new TaskObjectDAO(getBaseContext()).saveTaskToDatabase(fac.build());
     }
-
-
 
 }

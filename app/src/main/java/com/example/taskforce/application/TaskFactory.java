@@ -1,4 +1,9 @@
-package com.example.taskforce.task;
+package com.example.taskforce.application;
+
+import com.example.taskforce.domain.task.Frequency;
+import com.example.taskforce.domain.task.SubTask;
+import com.example.taskforce.domain.task.Task;
+import com.example.taskforce.domain.task.TaskObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +15,7 @@ public class TaskFactory {
     private Date targetDate;
     private Date finishDate;
     private Frequency frequency;
+    private int timeSpentMinutes;
     private boolean finished = false;
 
     private List<SubTask> subTasks = new ArrayList<>();
@@ -24,6 +30,10 @@ public class TaskFactory {
 
     public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
+    }
+
+    public void setTimeSpentMinutes(int timeSpentMinutes) {
+        this.timeSpentMinutes = timeSpentMinutes;
     }
 
     public void setFrequency(Frequency frequency) {
@@ -43,7 +53,7 @@ public class TaskFactory {
     }
 
     public TaskObject build(UUID id){
-        return new TaskObject(id, new Task(taskName, targetDate, frequency), finishDate, finished, subTasks);
+        return new TaskObject(id, new Task(taskName, targetDate, frequency), finishDate, finished, timeSpentMinutes, subTasks);
     }
 
 
