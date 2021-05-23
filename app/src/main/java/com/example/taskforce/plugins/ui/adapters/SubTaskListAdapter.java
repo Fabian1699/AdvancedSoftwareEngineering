@@ -1,4 +1,4 @@
-package com.example.taskforce.adapters;
+package com.example.taskforce.plugins.ui.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,11 +23,10 @@ public class SubTaskListAdapter extends BaseAdapter {
     private Map<String, View> views = new HashMap<>();
     private final TaskObjectDAO taskObjectDAO;
 
-    public SubTaskListAdapter(TaskObjectDAO taskObjectDAO, TaskObject data) {
+    public SubTaskListAdapter(TaskObjectDAO taskObjectDAO, TaskObject data, LayoutInflater inflater) {
         this.taskObjectDAO = taskObjectDAO;
         this.data = data;
-        inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = inflater;
     }
 
     @Override

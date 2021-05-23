@@ -1,4 +1,4 @@
-package com.example.taskforce.adapters;
+package com.example.taskforce.plugins.ui.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,11 +29,13 @@ public class TaskListAdapter extends BaseAdapter {
     Context context;
     List<TaskObject> data;
     private static LayoutInflater inflater = null;
+    private final TaskObjectDAO taskObjectDAO;
 
     private Map<UUID, View> views = new HashMap<>();
 
-    public TaskListAdapter(Context context, List<TaskObject> data) {
+    public TaskListAdapter(Context context, TaskObjectDAO taskObjectDAO,  List<TaskObject> data) {
         this.context = context;
+        this.taskObjectDAO=taskObjectDAO;
         this.data = data;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -79,7 +81,9 @@ public class TaskListAdapter extends BaseAdapter {
             progress.setProgress(calcProgressForTask(taskObj), true);
             check.setChecked(taskObj.isFinished());
 
-            SubTaskListAdapter adapter = new SubTaskListAdapter(context, data.get(position));
+
+
+            SubTaskListAdapter adapter = new SubTaskListAdapter(taskObjectDAO, data.get(position), inflater);
             lvSubTasks.setAdapter(adapter);
 
             deleteTask.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +123,7 @@ public class TaskListAdapter extends BaseAdapter {
                             ListView taskListView = (ListView) taskLayout.getParent();
                             TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
                             obj.finishTask();
-                            TaskObjectDAO.updateTask(context, obj);
+                            taskObjectDAO.updateTask(obj);
                             ((View)taskListView.getParent().getParent().getParent()).callOnClick();
                         }
                     };

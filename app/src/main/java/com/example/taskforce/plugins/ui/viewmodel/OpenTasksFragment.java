@@ -1,4 +1,4 @@
-package com.example.taskforce.plugins.main;
+package com.example.taskforce.plugins.ui.viewmodel;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,10 +15,11 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.taskforce.R;
 import com.example.taskforce.adapters.database.TaskObjectDAO;
+import com.example.taskforce.application.TaskObjectRepository;
 import com.example.taskforce.domain.task.TaskObject;
-import com.example.taskforce.adapters.TaskListAdapter;
+import com.example.taskforce.plugins.ui.adapters.TaskListAdapter;
+import com.example.taskforce.plugins.database.DatabaseHelper;
 import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
-import com.example.taskforce.plugins.ui.viewmodel.PageViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class OpenTasksFragment extends Fragment {
 
         data.addAll(getTasksToShow());
 
-        adapter = new TaskListAdapter(getContext(), data);
+        adapter = new TaskListAdapter(getContext(),new TaskObjectDAO(new DatabaseHelper(getContext())), data);
         ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
         lvDailyTasks.setAdapter(adapter);
 
@@ -88,10 +89,11 @@ public class OpenTasksFragment extends Fragment {
     }
 
     private List<TaskObject> getTasksToShow(){
+        TaskObjectRepository repo = new TaskObjectRepository(new TaskObjectDAO(new DatabaseHelper(getContext())));
         if(getArguments().getInt(ARG_SECTION_NUMBER)==1){
-            return TaskObjectDAO.getAllOpenTasks(getContext());
+            return repo.getAllOpenTasks();
         }
-        return TaskObjectDAO.getAllFinishedTasks(getContext());
+        return repo.getAllFinishedTasks();
     }
 
     private void updateTaskListView(TaskListAdapter adapter) {

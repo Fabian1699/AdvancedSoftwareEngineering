@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.taskforce.R;
-import com.example.taskforce.adapters.SectionsPagerAdapter;
+import com.example.taskforce.plugins.ui.adapters.SectionsPagerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 

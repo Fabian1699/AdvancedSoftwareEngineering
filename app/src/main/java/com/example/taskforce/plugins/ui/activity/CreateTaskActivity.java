@@ -6,6 +6,7 @@ import com.example.taskforce.adapters.database.TaskObjectDAO;
 import com.example.taskforce.domain.task.Frequency;
 import com.example.taskforce.domain.task.SubTask;
 import com.example.taskforce.application.TaskFactory;
+import com.example.taskforce.plugins.database.DatabaseHelper;
 import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -140,7 +141,7 @@ public class CreateTaskActivity extends AppCompatActivity {
         fac.setSubTasks(subTaskNames.stream().map(name -> new SubTask(name)).collect(Collectors.toList()));
 
 
-        return new TaskObjectDAO(getBaseContext()).saveTaskToDatabase(fac.build());
+        return new TaskObjectDAO(new DatabaseHelper(getBaseContext())).saveTaskToDatabase(fac.build());
     }
 
 }

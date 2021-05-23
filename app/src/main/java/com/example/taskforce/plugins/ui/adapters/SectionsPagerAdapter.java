@@ -1,4 +1,4 @@
-package com.example.taskforce.adapters;
+package com.example.taskforce.plugins.ui.adapters;
 
 import android.content.Context;
 
@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.taskforce.R;
-import com.example.taskforce.plugins.main.OpenTasksFragment;
+import com.example.taskforce.plugins.ui.viewmodel.OpenTasksFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to

@@ -82,7 +82,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
         contentValues.put(COL_FREQUENCY, frequency);
         contentValues.put(COL_FINISHED, isFinished);
 
-        return db.insert(TABLE_NAME_TASK, null, contentValues) !=-1;
+        boolean result = db.insert(TABLE_NAME_TASK, null, contentValues) !=-1;
+        return result;
     }
 
     @Override
@@ -92,7 +93,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
         contentValues.put(COL_ID, taskObjectId);
         contentValues.put(COL_NAME, sub.getTaskName());
         contentValues.put(COL_FINISHED, String.valueOf(sub.isFinished()));
-        return db.insert(TABLE_NAME_SUBTASK, null, contentValues)!=-1;
+        boolean result = db.insert(TABLE_NAME_SUBTASK, null, contentValues)!=-1;
+        return result;
     }
 
     @Override
@@ -114,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
             taskObjectValues.put(TaskObjectValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
             taskObjects.add(taskObjectValues);
         }
-
+        cursor.close();
         return taskObjects;
     }
 
@@ -131,7 +133,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
             subTaskValues.put(TaskObjectValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
             subTasksForTaskObject.add(subTaskValues);
         }
-
+        cursor.close();
         return subTasksForTaskObject;
     }
 
