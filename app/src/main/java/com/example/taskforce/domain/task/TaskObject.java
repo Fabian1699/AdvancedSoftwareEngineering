@@ -8,91 +8,60 @@ import java.util.UUID;
 
 public class TaskObject {
     private final UUID id;
-    private final Task task;
-    private List<SubTask> subTasks;
-    private boolean isFinished = false;
-    private Date finishDate;
-    private int timeSpentMinutes;
+    private final TaskBase taskBase;
+    private TaskFinish taskFinish;
 
 
-    public TaskObject(UUID id, Task task, Date finishDate, boolean isFinished, int timeSpentMinutes, List<SubTask> subTasks){
+    public TaskObject(UUID id, TaskBase taskBase, boolean isFinished, Date finishDate, int timeSpentMinutes){
         this.id = id;
-        this.task=task;
-        this.finishDate = finishDate;
-        this.isFinished = isFinished;
-        this.timeSpentMinutes = timeSpentMinutes;
-        this.subTasks = subTasks;
+        this.taskBase = taskBase;
+        this.taskFinish = new TaskFinish(isFinished, finishDate, timeSpentMinutes);
     }
 
-    public TaskObject(UUID id, Task task, List<SubTask> subTasks){
+    public TaskObject(UUID id, TaskBase taskBase){
         this.id = id;
-        this.task=task;
-        this.finishDate = task.getTargetDate();
-        this.isFinished = false;
-        this.timeSpentMinutes = 0;
-        this.subTasks = subTasks;
+        this.taskBase = taskBase;
+        this.taskFinish = new TaskFinish(false,taskBase.getTargetDate(), 0);
     }
 
-    public TaskObject(Task task){
+    public TaskObject(TaskBase taskBase){
         this.id=UUID.randomUUID();
-        this.task=task;
-        this.finishDate = task.getTargetDate();
-        this.timeSpentMinutes = 0;
-        this.subTasks = new ArrayList<>();
-    }
-
-    public void addSubTask(SubTask subTask){
-        this.subTasks.add(subTask);
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public List<SubTask> getSubTasks() {
-        return subTasks;
-    }
-
-    public int getTimeSpentMinutes() {
-        return timeSpentMinutes;
-    }
-
-    public void replaceSubTask(SubTask oldSub, SubTask newSub){
-        subTasks.set(subTasks.indexOf(oldSub), newSub);
-    }
-
-    public Date getFinishDate() {
-        return finishDate;
-    }
-
-    public void finishTask(){
-        this.finishDate = new Date(System.currentTimeMillis());
-        this.isFinished = true;
-    }
-
-    public boolean isFinished(){
-        return isFinished;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        //TODO
-        if (this == o) return true;
-        if (!(o instanceof TaskObject)) return false;
-        TaskObject that = (TaskObject) o;
-        return isFinished == that.isFinished &&
-                Objects.equals(id, that.id) &&
-                Objects.equals(task, that.task) &&
-                Objects.equals(subTasks, that.subTasks);
-    }
-
-    @Override
-    //TODO
-    public int hashCode() {
-        return Objects.hash(id, task, isFinished, subTasks);
+        this.taskBase = taskBase;
+        this.taskFinish = new TaskFinish(false,taskBase.getTargetDate(), 0);
     }
 
     public UUID getId() {
         return id;
+    }
+
+    public TaskBase getTaskBase() {
+        return new TaskBase(taskBase.getName(), taskBase.getTargetDate(), taskBase.getFrequency());
+    }
+
+    public TaskFinish getTaskFinish() {
+        return new TaskFinish(taskFinish.isFinished(), taskFinish.getFinishDate(), taskFinish.getTimeSpentMinutes());
+    }
+
+    public void finishTask(Date finishDate, int timeSpentMinutes){
+        if(!taskFinish.isFinished()) {
+            this.taskFinish = new TaskFinish(true, finishDate, timeSpentMinutes);
+        }
+    }
+
+    public boolean isFinished(){
+        return taskFinish.isFinished();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TaskObject)) return false;
+        TaskObject that = (TaskObject) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -2,7 +2,7 @@ package com.example.taskforce.application;
 
 import com.example.taskforce.domain.task.Frequency;
 import com.example.taskforce.domain.task.SubTask;
-import com.example.taskforce.domain.task.Task;
+import com.example.taskforce.domain.task.TaskBase;
 import com.example.taskforce.domain.task.TaskObject;
 
 import java.util.ArrayList;
@@ -49,11 +49,11 @@ public class TaskFactory {
     }
 
     public TaskObject build(){
-        return new TaskObject(new Task(taskName, targetDate, frequency));
+        return new TaskObject(new TaskBase(taskName, targetDate, frequency));
     }
 
     public TaskObject build(UUID id){
-        return new TaskObject(id, new Task(taskName, targetDate, frequency), finishDate, finished, timeSpentMinutes, subTasks);
+        return new TaskObject(id, new TaskBase(taskName, targetDate, frequency), finishDate, finished, timeSpentMinutes, subTasks);
     }
 
 

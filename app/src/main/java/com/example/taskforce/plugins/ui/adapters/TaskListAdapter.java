@@ -77,7 +77,7 @@ public class TaskListAdapter extends BaseAdapter {
             ListView lvSubTasks = v.findViewById(R.id.lv_subtasks);
             ImageButton deleteTask = v.findViewById(R.id.deleteTask);
 
-            name.setText(taskObj.getTask().getName());
+            name.setText(taskObj.getTaskBase().getName());
             progress.setProgress(calcProgressForTask(taskObj), true);
             check.setChecked(taskObj.isFinished());
 
@@ -168,7 +168,7 @@ public class TaskListAdapter extends BaseAdapter {
                 ListView lvSubTasks = v.findViewById(R.id.lv_subtasks);
 
                 //lvSubTasks.setAdapter(new SubTaskListAdapter(context, taskObj));
-                name.setText(taskObj.getTask().getName());
+                name.setText(taskObj.getTaskBase().getName());
                 progress.setProgress(calcProgressForTask(taskObj), true);
             }
         }

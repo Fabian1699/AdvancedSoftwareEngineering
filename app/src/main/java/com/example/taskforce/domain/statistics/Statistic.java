@@ -1,9 +1,9 @@
 package com.example.taskforce.domain.statistics;
 
 public class Statistic {
-    private String taskName;
-    private double timeSpentMinutes;
-    private double timePercentage;
+    private final String taskName;
+    private final double timeSpentMinutes;
+    private final double timePercentage;
 
     public Statistic(String taskName, double timeSpentMinutes, double timePercentage) {
         this.taskName = taskName;

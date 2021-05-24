@@ -1,6 +1,7 @@
 package com.example.taskforce.domain.task;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class SubTask {
     private final String taskName;
@@ -22,10 +23,6 @@ public class SubTask {
 
     public boolean isFinished(){
         return finished;
-    }
-
-    public SubTask finish(){
-        return new SubTask(taskName, true);
     }
 
     @Override

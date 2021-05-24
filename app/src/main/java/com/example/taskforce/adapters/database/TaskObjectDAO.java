@@ -4,7 +4,7 @@ import com.example.taskforce.application.ITaskObjectDAO;
 import com.example.taskforce.application.TaskFactory;
 import com.example.taskforce.domain.task.Frequency;
 import com.example.taskforce.domain.task.SubTask;
-import com.example.taskforce.domain.task.Task;
+import com.example.taskforce.domain.task.TaskBase;
 import com.example.taskforce.domain.task.TaskObject;
 
 import java.text.SimpleDateFormat;
@@ -78,14 +78,14 @@ public class TaskObjectDAO implements ITaskObjectDAO {
 
 
     public boolean saveTaskToDatabase(TaskObject taskObject){
-        Task task = taskObject.getTask();
+        TaskBase taskBase = taskObject.getTaskBase();
         boolean worked = dbHelper.addTask(
                 taskObject.getId().toString(),
-                task.getName(),
-                new SimpleDateFormat("yyyy-MM-dd").format(task.getTargetDate()),
+                taskBase.getName(),
+                new SimpleDateFormat("yyyy-MM-dd").format(taskBase.getTargetDate()),
                 new SimpleDateFormat("yyyy-MM-dd").format(taskObject.getFinishDate()),
                 String.valueOf(taskObject.getTimeSpentMinutes()),
-                task.getFrequency().getKey(),
+                taskBase.getFrequency().getKey(),
                 String.valueOf(taskObject.isFinished()));
 
         for(SubTask sub: taskObject.getSubTasks()){
