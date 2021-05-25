@@ -46,15 +46,13 @@ public class TaskListAdapter extends BaseAdapter {
 
     private void generateViews(TaskRepository repository, LayoutInflater inflater, boolean openTasks) {
         List<Task> tasks = new ArrayList<>();
-        tasks = repository.getAll(false);
-        /*
+
         if(openTasks) {
             tasks = repository.getAllOpenTasks();
         }else {
             tasks = repository.getAllFinishedTasks();
         }
 
-         */
 
         int count = 0;
         for(Task task:tasks) {
@@ -75,7 +73,7 @@ public class TaskListAdapter extends BaseAdapter {
             ImageButton deleteTask = v.findViewById(R.id.deleteTask);
 
             name.setText(task.getTaskObjectCopy().getTaskBase().getName());
-            progress.setProgress((int)task.progress()*100, true);
+            progress.setProgress((int)(task.progress()*100), true);
             check.setChecked(task.isFinished());
 
             SubTaskListAdapter adapter = new SubTaskListAdapter(task.getId(), repository, inflater);
@@ -144,7 +142,7 @@ public class TaskListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return repository.getAll(false).size();
+        return views.size();
     }
 
     @Override
@@ -166,6 +164,7 @@ public class TaskListAdapter extends BaseAdapter {
     public void notifyDataSetChanged() {
         views.clear();
         generateViews(repository, inflater, false);
+        super.notifyDataSetChanged();
 
 
         /*

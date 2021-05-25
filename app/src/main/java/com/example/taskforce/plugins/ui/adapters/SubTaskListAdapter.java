@@ -73,8 +73,7 @@ public class SubTaskListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        Optional<Task> task  = repository.find(taskId);
-        return task.isPresent()? task.get().getSubTasks().size():0;
+        return views.size();
     }
 
     @Override
@@ -92,4 +91,10 @@ public class SubTaskListAdapter extends BaseAdapter {
         return (View) getItem(position);
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        views.clear();
+        generateViews(taskId, repository, inflater);
+        super.notifyDataSetChanged();
+    }
 }

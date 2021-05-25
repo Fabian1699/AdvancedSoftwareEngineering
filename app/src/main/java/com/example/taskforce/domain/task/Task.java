@@ -60,15 +60,19 @@ public class Task {
 
     public double progress(){
         return subTasks.size()>0 && subTasks.stream().filter(SubTask::isFinished).count()>0?
-                subTasks.size()/subTasks.stream().filter(SubTask::isFinished).count()
+                subTasks.stream().filter(SubTask::isFinished).count()/(double)subTasks.size()
                 : 0;
     }
 
     public void finishSubTask(String name){
-        SubTask subTaskToFinish = new SubTask(name);
+        SubTask subTaskToFinish = new SubTask(name, false);
+        SubTask subTaskFinished = new SubTask(name, true);
         if(subTasks.contains(subTaskToFinish)){
             subTasks.remove(subTaskToFinish);
             subTasks.add(new SubTask(subTaskToFinish.getTaskName(), true));
+        }else if(subTasks.contains(subTaskFinished)){
+            subTasks.remove(subTaskToFinish);
+            subTasks.add(new SubTask(subTaskToFinish.getTaskName(), false));
         }
     }
 }

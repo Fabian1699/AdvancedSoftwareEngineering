@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.taskforce.R;
 import com.example.taskforce.plugins.ui.viewmodel.OpenTasksFragment;
 
+
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
@@ -30,9 +31,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
-      new Fragment();
 
-        return OpenTasksFragment.newInstance(position + 1);
+        if(position==2){
+            return new Fragment();
+        }
+
+        return OpenTasksFragment.newInstance(position);
     }
 
     @Nullable

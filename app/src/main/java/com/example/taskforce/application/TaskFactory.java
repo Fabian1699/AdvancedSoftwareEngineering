@@ -71,7 +71,7 @@ public class TaskFactory {
             taskBase = new TaskBase(taskName, targetDate, frequency);
         }
 
-        if(finished = true && finishDate!=null){
+        if(finished == true && finishDate!=null){
             taskFinish = new TaskFinish(true, finishDate, timeSpentMinutes);
         }
 

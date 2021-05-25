@@ -34,12 +34,14 @@ public class OpenTasksFragment extends Fragment {
 
     private PageViewModel pageViewModel;
     private TaskListAdapter adapter;
+    private int index = 0;
 
     public static OpenTasksFragment newInstance(int index) {
         OpenTasksFragment fragment = new OpenTasksFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);
+        fragment.index = index;
         return fragment;
     }
 
@@ -47,7 +49,7 @@ public class OpenTasksFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
-        int index = 1;
+
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
@@ -72,7 +74,7 @@ public class OpenTasksFragment extends Fragment {
         TaskDAO taskDAO = new TaskDAO(databaseHelper);
         TaskRepository repository = new TaskRepository(taskDAO);
 
-        adapter = new TaskListAdapter(getContext(), repository, false);
+        adapter = new TaskListAdapter(getContext(), repository, index==0);
         ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
         lvDailyTasks.setAdapter(adapter);
 
