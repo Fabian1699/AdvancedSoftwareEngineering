@@ -1,36 +1,34 @@
 package com.example.taskforce.domain.statistics;
 
-import com.example.taskforce.adapters.database.TaskObjectDAO;
-import com.example.taskforce.application.ITaskObjectDAO;
-import com.example.taskforce.domain.statistics.StatisticTimeSpanCollection;
-import com.example.taskforce.domain.task.ITaskObjectRepository;
-import com.example.taskforce.domain.task.TaskObject;
+import com.example.taskforce.domain.task.ITaskRepository;
+import com.example.taskforce.domain.task.Task;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class StatisticService {
-    ITaskObjectRepository taskObjectRepo;
+    ITaskRepository taskObjectRepo;
 
-    public StatisticService(ITaskObjectRepository taskObjectRepo){
+    public StatisticService(ITaskRepository taskObjectRepo){
         this.taskObjectRepo = taskObjectRepo;
     }
 
     public StatisticTimeSpanCollection getDalyStatistics(){
 
-        List<TaskObject> finishedTasks = taskObjectRepo.getAllFinishedTasks().stream()//
+        List<Task> finishedTasks = taskObjectRepo.getAllFinishedTasks().stream()//
             .sorted(new TaskComapartor())//
             .collect(Collectors.toList());
 
         return new StatisticTimeSpanCollection();
     }
 
-    private class TaskComapartor implements Comparator<TaskObject>{
+    private class TaskComapartor implements Comparator<Task>{
 
         @Override
-        public int compare(TaskObject o1, TaskObject o2) {
-            return o1.getFinishDate().compareTo(o2.getFinishDate());
+        public int compare(Task o1, Task o2) {
+            return o1.getTaskObjectCopy().getTaskFinish().getFinishDate()
+                    .compareTo(o2.getTaskObjectCopy().getTaskFinish().getFinishDate());
         }
     }
 }

@@ -2,10 +2,11 @@ package com.example.taskforce.plugins.ui.activity;
 
 import android.os.Bundle;
 
-import com.example.taskforce.adapters.database.TaskObjectDAO;
+import com.example.taskforce.adapters.database.TaskDAO;
+import com.example.taskforce.application.TaskRepository;
 import com.example.taskforce.domain.task.Frequency;
-import com.example.taskforce.domain.task.SubTask;
 import com.example.taskforce.application.TaskFactory;
+import com.example.taskforce.domain.task.Task;
 import com.example.taskforce.plugins.database.DatabaseHelper;
 import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
 
@@ -26,9 +27,10 @@ import com.example.taskforce.R;
 
 import java.sql.Date;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CreateTaskActivity extends AppCompatActivity {
@@ -42,7 +44,7 @@ public class CreateTaskActivity extends AppCompatActivity {
     private Button addSubTask;
     private ListView subTasks;
 
-    List<String> subTaskNames = new ArrayList<>();
+    Set<String> subTaskNames = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +76,9 @@ public class CreateTaskActivity extends AppCompatActivity {
         taskSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                save();
-                finish();
+                if(save()){
+                    finish();
+                }
             }
         });
 
@@ -106,7 +109,6 @@ public class CreateTaskActivity extends AppCompatActivity {
             }
         });
 
-        TaskFactory factory = new TaskFactory();
         ArrayAdapter<CharSequence> subTaskAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_list_item_1);
         subTaskAdapter.addAll(subTaskNames);
         subTasks.setAdapter(subTaskAdapter);
@@ -138,10 +140,13 @@ public class CreateTaskActivity extends AppCompatActivity {
         }
 
         fac.setTargetDate(Date.from(Instant.ofEpochMilli(calendar.getDate())));
-        fac.setSubTasks(subTaskNames.stream().map(name -> new SubTask(name)).collect(Collectors.toList()));
-
-
-        return new TaskObjectDAO(new DatabaseHelper(getBaseContext())).saveTaskToDatabase(fac.build());
+        fac.setSubTasksFromString(subTaskNames);
+        Optional<Task> task = fac.build();
+        if(task.isPresent()){
+            new TaskRepository(new TaskDAO(new DatabaseHelper(getBaseContext()))).add(task.get());
+            return true;
+        }
+        return false;
     }
 
 }

@@ -14,8 +14,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.taskforce.R;
-import com.example.taskforce.adapters.database.TaskObjectDAO;
-import com.example.taskforce.application.TaskObjectRepository;
+import com.example.taskforce.adapters.database.TaskDAO;
+import com.example.taskforce.application.TaskRepository;
 import com.example.taskforce.domain.task.TaskObject;
 import com.example.taskforce.plugins.ui.adapters.TaskListAdapter;
 import com.example.taskforce.plugins.database.DatabaseHelper;
@@ -67,13 +67,15 @@ public class OpenTasksFragment extends Fragment {
             }
         });
 
-        data.addAll(getTasksToShow());
 
-        adapter = new TaskListAdapter(getContext(),new TaskObjectDAO(new DatabaseHelper(getContext())), data);
+        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+        TaskDAO taskDAO = new TaskDAO(databaseHelper);
+        TaskRepository repository = new TaskRepository(taskDAO);
+
+        adapter = new TaskListAdapter(getContext(), repository, false);
         ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
         lvDailyTasks.setAdapter(adapter);
 
-        View test123 = lvDailyTasks.getRootView();
 
         root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,22 +90,8 @@ public class OpenTasksFragment extends Fragment {
         return root;
     }
 
-    private List<TaskObject> getTasksToShow(){
-        TaskObjectRepository repo = new TaskObjectRepository(new TaskObjectDAO(new DatabaseHelper(getContext())));
-        if(getArguments().getInt(ARG_SECTION_NUMBER)==1){
-            return repo.getAllOpenTasks();
-        }
-        return repo.getAllFinishedTasks();
-    }
-
     private void updateTaskListView(TaskListAdapter adapter) {
-        List<TaskObject> tasks = getTasksToShow();
-        if(!data.equals(tasks)){
-            data.clear();
-            data.addAll(tasks);
-            adapter.notifyDataSetChanged();
-        }
-
+        adapter.notifyDataSetChanged();
     }
 
     @Override

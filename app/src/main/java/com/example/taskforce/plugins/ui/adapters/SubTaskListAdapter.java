@@ -1,6 +1,5 @@
 package com.example.taskforce.plugins.ui.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,33 +9,77 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.taskforce.R;
-import com.example.taskforce.adapters.database.TaskObjectDAO;
+import com.example.taskforce.adapters.database.TaskDAO;
+import com.example.taskforce.application.TaskRepository;
 import com.example.taskforce.domain.task.SubTask;
-import com.example.taskforce.domain.task.TaskObject;
+import com.example.taskforce.domain.task.Task;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class SubTaskListAdapter extends BaseAdapter {
-    private final TaskObject data;
+    private final UUID taskId;
     private static LayoutInflater inflater = null;
-    private Map<String, View> views = new HashMap<>();
-    private final TaskObjectDAO taskObjectDAO;
+    private Map<Integer, Map<String, View>> views = new HashMap<>();
+    private final TaskRepository repository;
 
-    public SubTaskListAdapter(TaskObjectDAO taskObjectDAO, TaskObject data, LayoutInflater inflater) {
-        this.taskObjectDAO = taskObjectDAO;
-        this.data = data;
+    public SubTaskListAdapter(UUID taskId, TaskRepository repository, LayoutInflater inflater) {
+        this.repository = repository;
+        this.taskId = taskId;
         this.inflater = inflater;
+
+        generateViews(taskId, repository, inflater);
+    }
+
+    private void generateViews(UUID taskId, TaskRepository repository, LayoutInflater inflater) {
+        int count =0;
+        Optional<Task> task  = repository.find(taskId);
+        if(task.isPresent()){
+            for(SubTask sub:task.get().getSubTasks()){
+                View v = inflater.inflate(R.layout.subtask, null);
+                TextView name = v.findViewById(R.id.subtaskName);
+                CheckBox check = v.findViewById(R.id.subtaskCheck);
+                name.setText(sub.getTaskName());
+                check.setChecked(sub.isFinished());
+
+                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    private String subTaskName = sub.getTaskName();
+
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                        Optional<Task> taskOpt  = repository.find(taskId);
+                        if(taskOpt.isPresent()){
+                            Task task = taskOpt.get();
+                            task.finishSubTask(subTaskName);
+                            repository.updateTask(task);
+                        }
+
+                        View listViewParent = ((View) buttonView.getParent().getParent().getParent());
+                        listViewParent.callOnClick();
+                    }
+                });
+                Map<String, View> subTaskView = new HashMap<>();
+                subTaskView.put(sub.getTaskName(), v);
+
+                views.put(count,subTaskView);
+                count++;
+            }
+        }
     }
 
     @Override
     public int getCount() {
-        return data.getSubTasks().size();
+        Optional<Task> task  = repository.find(taskId);
+        return task.isPresent()? task.get().getSubTasks().size():0;
     }
 
     @Override
     public Object getItem(int position) {
-        return data.getSubTasks().get(position);
+        return views.get(position).values().stream().findFirst().get();
     }
 
     @Override
@@ -46,33 +89,7 @@ public class SubTaskListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View v = views.get((SubTask) getItem(position));
-        if(v==null) {
-            SubTask subTask = data.getSubTasks().get(position);
-            v = inflater.inflate(R.layout.subtask, null);
-            TextView name = v.findViewById(R.id.subtaskName);
-            CheckBox check = v.findViewById(R.id.subtaskCheck);
-            name.setText(subTask.getTaskName());
-            check.setChecked(subTask.isFinished());
-
-            check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                private int pos = position;
-
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    SubTask sub = data.getSubTasks().get(pos);
-                    if(isChecked){
-                        SubTask subFinished = sub.finish();
-                        taskObjectDAO.updateSubTask(data.getId(), subFinished);
-                    }else{
-                        taskObjectDAO.updateSubTask(data.getId(), new SubTask(sub.getTaskName()));
-                    }
-                    View listViewParent = ((View) buttonView.getParent().getParent().getParent());
-                    listViewParent.callOnClick();
-                }
-            });
-            views.put(subTask.getTaskName(), v);
-        }
-        return v;
+        return (View) getItem(position);
     }
+
 }

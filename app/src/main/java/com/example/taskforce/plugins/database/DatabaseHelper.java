@@ -87,12 +87,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
     }
 
     @Override
-    public boolean addSubTask(String taskObjectId, SubTask sub){
+    public boolean addSubTask(String taskObjectId, String subTaskName, String isSubTaskFinished){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_ID, taskObjectId);
-        contentValues.put(COL_NAME, sub.getTaskName());
-        contentValues.put(COL_FINISHED, String.valueOf(sub.isFinished()));
+        contentValues.put(COL_NAME, subTaskName);
+        contentValues.put(COL_FINISHED, isSubTaskFinished);
         boolean result = db.insert(TABLE_NAME_SUBTASK, null, contentValues)!=-1;
         return result;
     }
@@ -118,6 +118,26 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
         }
         cursor.close();
         return taskObjects;
+    }
+
+    @Override
+    public Map<TaskObjectValues, String> getTask(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME_TASK + " WHERE " + COL_ID + " = \"" + id + "\"";
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+        Map<TaskObjectValues, String> taskObjectValues = new HashMap<>();
+        taskObjectValues.put(TaskObjectValues.ID, cursor.getString(cursor.getColumnIndex(COL_ID)));
+        taskObjectValues.put(TaskObjectValues.NAME, cursor.getString(cursor.getColumnIndex(COL_NAME)));
+        taskObjectValues.put(TaskObjectValues.TARGET_DATE, cursor.getString(cursor.getColumnIndex(COL_TARGET_DATE)));
+        taskObjectValues.put(TaskObjectValues.FINISH_DATE, cursor.getString(cursor.getColumnIndex(COL_FINISH_DATE)));
+        taskObjectValues.put(TaskObjectValues.TIME_SPENT, cursor.getString(cursor.getColumnIndex(COL_TIME_SPENT)));
+        taskObjectValues.put(TaskObjectValues.FREQUENCY, cursor.getString(cursor.getColumnIndex(COL_FREQUENCY)));
+        taskObjectValues.put(TaskObjectValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
+
+        cursor.close();
+        return taskObjectValues;
     }
 
     public List<Map<TaskObjectValues, String>> getSubTasks(String id){
@@ -157,12 +177,16 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
 
     public void deleteTask(String id){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + TABLE_NAME_TASK + " WHERE "
+        String queryTask = "DELETE FROM " + TABLE_NAME_TASK + " WHERE "
                 + COL_ID + " = '" + id + "'";
 
-        Log.d(TAG, query);
-        System.out.println("delete task with id: " + id + "\n" + query);
-        db.execSQL(query);
+        String querySubTask = "DELETE FROM " + TABLE_NAME_SUBTASK + " WHERE "
+                + COL_ID + " = '" + id + "'";
+
+        Log.d(TAG, queryTask);
+        System.out.println("delete task with id: " + id + "\n" + queryTask);
+        db.execSQL(queryTask);
+        db.execSQL(querySubTask);
     }
 
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -15,11 +16,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.taskforce.R;
-import com.example.taskforce.adapters.database.TaskObjectDAO;
+import com.example.taskforce.application.TaskRepository;
 import com.example.taskforce.domain.task.SubTask;
+import com.example.taskforce.domain.task.Task;
 import com.example.taskforce.domain.task.TaskObject;
 import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,42 +30,36 @@ import java.util.UUID;
 
 public class TaskListAdapter extends BaseAdapter {
     Context context;
-    List<TaskObject> data;
     private static LayoutInflater inflater = null;
-    private final TaskObjectDAO taskObjectDAO;
+    private final TaskRepository repository;
 
-    private Map<UUID, View> views = new HashMap<>();
+    private Map<Integer, Map<UUID, View>> views = new HashMap<>();
 
-    public TaskListAdapter(Context context, TaskObjectDAO taskObjectDAO,  List<TaskObject> data) {
+    public TaskListAdapter(Context context, TaskRepository repository, boolean openTasks) {
         this.context = context;
-        this.taskObjectDAO=taskObjectDAO;
-        this.data = data;
+        this.repository = repository;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        generateViews(repository, inflater, openTasks);
     }
 
-    @Override
-    public int getCount() {
-        return data.size();
-    }
+    private void generateViews(TaskRepository repository, LayoutInflater inflater, boolean openTasks) {
+        List<Task> tasks = new ArrayList<>();
+        tasks = repository.getAll(false);
+        /*
+        if(openTasks) {
+            tasks = repository.getAllOpenTasks();
+        }else {
+            tasks = repository.getAllFinishedTasks();
+        }
 
-    @Override
-    public Object getItem(int position) {
-        return data.get(position);
-    }
+         */
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+        int count = 0;
+        for(Task task:tasks) {
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        TaskObject taskObj = data.get(position);
-        View v = views.get(taskObj.getId());
-
-        if(v==null) {
-            v = inflater.inflate(R.layout.task, null);
+            View v = inflater.inflate(R.layout.task, null);
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -77,13 +74,11 @@ public class TaskListAdapter extends BaseAdapter {
             ListView lvSubTasks = v.findViewById(R.id.lv_subtasks);
             ImageButton deleteTask = v.findViewById(R.id.deleteTask);
 
-            name.setText(taskObj.getTaskBase().getName());
-            progress.setProgress(calcProgressForTask(taskObj), true);
-            check.setChecked(taskObj.isFinished());
+            name.setText(task.getTaskObjectCopy().getTaskBase().getName());
+            progress.setProgress((int)task.progress()*100, true);
+            check.setChecked(task.isFinished());
 
-
-
-            SubTaskListAdapter adapter = new SubTaskListAdapter(taskObjectDAO, data.get(position), inflater);
+            SubTaskListAdapter adapter = new SubTaskListAdapter(task.getId(), repository, inflater);
             lvSubTasks.setAdapter(adapter);
 
             deleteTask.setOnClickListener(new View.OnClickListener() {
@@ -91,13 +86,13 @@ public class TaskListAdapter extends BaseAdapter {
                 public void onClick(View button) {
                     //MenuInflater menuInflater = new MenuInflater(context);
                     //menuInflater.inflate(R.menu.task_menu, );
-                    /*
-                    View taskLayout =(View) button.getParent().getParent();
-                    ListView taskListView = (ListView) taskLayout.getParent();
-                    TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
-                    TaskObjectDAO.deleteTaskFromDatabase(context, obj.getId());
+                        /*
+                        View taskLayout =(View) button.getParent().getParent();
+                        ListView taskListView = (ListView) taskLayout.getParent();
+                        TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
+                        TaskObjectDAO.deleteTaskFromDatabase(context, obj.getId());
 
-                     */
+                         */
                 }
             });
 
@@ -109,21 +104,24 @@ public class TaskListAdapter extends BaseAdapter {
                     builder.setTitle("Investierte Zeit");
                     builder.setView(inflater.inflate(R.layout.time_spend_dialog, null));
 
+                    //TODO take time spent
+
                     DialogInterface.OnClickListener abortListener = new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
+                        public void onClick(DialogInterface dialog, int which) {}
                     };
 
                     DialogInterface.OnClickListener finishListener = new DialogInterface.OnClickListener() {
+                        UUID taskId = task.getId();
+
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             View taskLayout =(View) buttonView.getParent().getParent();
                             ListView taskListView = (ListView) taskLayout.getParent();
-                            TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
-                            obj.finishTask();
-                            taskObjectDAO.updateTask(obj);
+                            //TODO Optional handling
+                            Task taskToFinish = repository.find(taskId).get();
+                            taskToFinish.finishTask(10);
+                            repository.updateTask(taskToFinish);
                             ((View)taskListView.getParent().getParent().getParent()).callOnClick();
                         }
                     };
@@ -135,30 +133,50 @@ public class TaskListAdapter extends BaseAdapter {
             });
 
             ListViewSizeUtil.setListViewHeightBasedOnChildren(lvSubTasks);
-            views.put(taskObj.getId(), v);
+            Map<UUID, View> taskView = new HashMap<>();
+            taskView.put(task.getId(), v);
+
+            views.put(count, taskView);
+            count++;
         }
-        return v;
+
     }
 
-    private int calcProgressForTask(TaskObject taskObj){
-        if(taskObj.getSubTasks().size()>0) {
-            int finishedSubTasks = (int) taskObj.getSubTasks().stream().filter(SubTask::isFinished).count();
-            return finishedSubTasks*100 / taskObj.getSubTasks().size();
-        }
-        return 0;
+    @Override
+    public int getCount() {
+        return repository.getAll(false).size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return "";
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        return (View) views.get(position).values().stream().findFirst().get();
     }
 
     @Override
     public void notifyDataSetChanged() {
+        views.clear();
+        generateViews(repository, inflater, false);
 
-        if(views.size()!=data.size()){
+
+        /*
+        if(views.size()!=views.size()){
             super.notifyDataSetChanged();
             return;
         }
-
+        List<Task> tasks = repository.getAllOpenTasks();
         for(int i=0; i<data.size(); i++){
-            TaskObject taskObj = data.get(i);
-            View v = views.get(taskObj.getId());
+            Task task = tasks.get(i);
+            View v = views.get(i).get(task.getId());
             if(views ==null){
                 v = getView(i,null, null);
             }else{
@@ -168,9 +186,11 @@ public class TaskListAdapter extends BaseAdapter {
                 ListView lvSubTasks = v.findViewById(R.id.lv_subtasks);
 
                 //lvSubTasks.setAdapter(new SubTaskListAdapter(context, taskObj));
-                name.setText(taskObj.getTaskBase().getName());
+                name.setText(task.getTaskObjectCopy().getTaskBase().getName());
                 progress.setProgress(calcProgressForTask(taskObj), true);
             }
-        }
+        }*/
+
     }
+
 }

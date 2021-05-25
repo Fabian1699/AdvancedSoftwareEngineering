@@ -12,10 +12,10 @@ public class TaskObject {
     private TaskFinish taskFinish;
 
 
-    public TaskObject(UUID id, TaskBase taskBase, boolean isFinished, Date finishDate, int timeSpentMinutes){
+    public TaskObject(UUID id, TaskBase taskBase, TaskFinish taskFinish){
         this.id = id;
         this.taskBase = taskBase;
-        this.taskFinish = new TaskFinish(isFinished, finishDate, timeSpentMinutes);
+        this.taskFinish = taskFinish;
     }
 
     public TaskObject(UUID id, TaskBase taskBase){
@@ -42,9 +42,10 @@ public class TaskObject {
         return new TaskFinish(taskFinish.isFinished(), taskFinish.getFinishDate(), taskFinish.getTimeSpentMinutes());
     }
 
-    public void finishTask(Date finishDate, int timeSpentMinutes){
+    public void finishTask(int timeSpentMinutes){
         if(!taskFinish.isFinished()) {
-            this.taskFinish = new TaskFinish(true, finishDate, timeSpentMinutes);
+            this.taskFinish = new TaskFinish(true, new Date(System.currentTimeMillis()),
+                    timeSpentMinutes<0? 0:timeSpentMinutes);
         }
     }
 
