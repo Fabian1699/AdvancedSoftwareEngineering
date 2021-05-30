@@ -9,6 +9,7 @@ import com.example.taskforce.domain.task.TaskBase;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,42 +29,44 @@ public class TaskDAO implements ITaskDAO {
         List<Map<TaskObjectValues, String>> taskValues = dbHelper.getTasks();
 
         return taskValues.stream()
-                .map(taskWithStringValues -> generateTaskFromStringValues(taskWithStringValues))
+                .map(taskWithStringValues -> generateTaskFromStringValues(taskWithStringValues, new HashSet<>()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
     public Optional<Task> getTask(UUID id){
-        return generateTaskFromStringValues(dbHelper.getTask(id.toString()));
+        return generateTaskFromStringValues(dbHelper.getTask(id.toString()), new HashSet<>());
     }
 
-    private Optional<Task> generateTaskFromStringValues(Map<TaskObjectValues, String> taskObjectWithStringValues) {
+    private Optional<Task> generateTaskFromStringValues(Map<TaskObjectValues, String> taskObjectWithStringValues, Set<String> subTasks) {
         TaskFactory fac = new TaskFactory();
 
-        UUID objId = UUID.fromString(taskObjectWithStringValues.get(TaskObjectValues.ID));
+        UUID objId = UUID.fromString(taskObjectWithStringValues.getOrDefault(TaskObjectValues.ID, null));
         fac.setId(objId);
-        fac.setTaskName(taskObjectWithStringValues.get(TaskObjectValues.NAME));
+        fac.setTaskName(taskObjectWithStringValues.getOrDefault(TaskObjectValues.NAME, null));
 
         try {
             fac.setTargetDate(new SimpleDateFormat("yyyy-MM-dd")
-                    .parse(taskObjectWithStringValues.get(TaskObjectValues.TARGET_DATE)));
+                    .parse(taskObjectWithStringValues.getOrDefault(TaskObjectValues.TARGET_DATE, null)));
             fac.setFinishDate(new SimpleDateFormat("yyyy-MM-dd")
-                    .parse(taskObjectWithStringValues.get(TaskObjectValues.FINISH_DATE)));
-            fac.setFrequency(Frequency.fromKey(taskObjectWithStringValues.get(TaskObjectValues.FREQUENCY)));
+                    .parse(taskObjectWithStringValues.getOrDefault(TaskObjectValues.FINISH_DATE, null)));
+            fac.setFrequency(Frequency.fromKey(taskObjectWithStringValues.getOrDefault(TaskObjectValues.FREQUENCY, null)));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        fac.setTimeSpentMinutes(Integer.valueOf(taskObjectWithStringValues.get(TaskObjectValues.TIME_SPENT)));
-        fac.setFinished(Boolean.valueOf(taskObjectWithStringValues.get(TaskObjectValues.FINISHED)));
+        fac.setTimeSpentMinutes(Integer.valueOf(taskObjectWithStringValues.getOrDefault(TaskObjectValues.TIME_SPENT, null)));
+        fac.setFinished(Boolean.valueOf(taskObjectWithStringValues.getOrDefault(TaskObjectValues.FINISHED, null)));
 
-        List<Map<TaskObjectValues, String>> subTasksWithStringValues = dbHelper.getSubTasks(objId.toString());
-        Set<SubTask> subTasks = subTasksWithStringValues.stream()//
-                .map(sub -> generateSubTaskFromStringValues(sub))//
-                .collect(Collectors.toSet());
+        if(subTasks.isEmpty()) {
+            List<Map<TaskObjectValues, String>> subTasksWithStringValues = dbHelper.getSubTasks(objId.toString());
+            fac.setSubTasks(subTasksWithStringValues.stream()//
+                    .map(sub -> generateSubTaskFromStringValues(sub))//
+                    .collect(Collectors.toSet()));
 
-        fac.setSubTasks(subTasks);
+        }
+        fac.setSubTasksFromString(subTasks);
         return fac.build();
     }
 

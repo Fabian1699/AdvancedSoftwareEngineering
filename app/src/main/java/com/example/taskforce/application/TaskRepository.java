@@ -1,6 +1,6 @@
 package com.example.taskforce.application;
 
-import com.example.taskforce.domain.task.ITaskRepository;
+import com.example.taskforce.domain.ITaskRepository;
 import com.example.taskforce.domain.task.Task;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class TaskRepository implements ITaskRepository {
     }
 
     @Override
-    public List<Task> getAll(boolean onlyOpenTasks) {
+    public List<Task> getAll() {
         return taskObjectDAO.getAllTaskObjects();
     }
 

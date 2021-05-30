@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class Task {
-    private final TaskObject taskObject;
+    private TaskObject taskObject;
     private Set<SubTask> subTasks = new HashSet<>();
 
     public Task(TaskBase taskBase){
@@ -35,12 +35,6 @@ public class Task {
 
     public void finishTask(int timeSpentMinutes){
         taskObject.finishTask(timeSpentMinutes);
-    }
-
-    public void addSubTask(String name){
-        if(subTasks.size()<100 && !subTasks.contains(new SubTask(name, true))){
-            this.subTasks.add(new SubTask(name));
-        }
     }
 
     public void addSubTask(String name, boolean isFinished){

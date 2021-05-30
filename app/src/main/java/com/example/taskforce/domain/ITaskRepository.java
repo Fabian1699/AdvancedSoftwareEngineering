@@ -1,11 +1,13 @@
-package com.example.taskforce.domain.task;
+package com.example.taskforce.domain;
+
+import com.example.taskforce.domain.task.Task;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface ITaskRepository {
-    public List<Task> getAll(boolean onlyOpenTasks);
+    public List<Task> getAll();
 
     public List<Task> getAllOpenTasks();
 

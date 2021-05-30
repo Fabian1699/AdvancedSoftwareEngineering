@@ -1,8 +1,10 @@
-package com.example.taskforce.domain.statistics;
+package com.example.taskforce.application;
 
-import com.example.taskforce.domain.task.ITaskRepository;
+import com.example.taskforce.domain.statistics.Statistic;
+import com.example.taskforce.domain.ITaskRepository;
 import com.example.taskforce.domain.task.Task;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,13 +16,15 @@ public class StatisticService {
         this.taskObjectRepo = taskObjectRepo;
     }
 
-    public StatisticTimeSpanCollection getDalyStatistics(){
+    public List<Statistic> getDalyStatistics(){
 
         List<Task> finishedTasks = taskObjectRepo.getAllFinishedTasks().stream()//
             .sorted(new TaskComapartor())//
             .collect(Collectors.toList());
 
-        return new StatisticTimeSpanCollection();
+        List<Statistic> statistics = new ArrayList<>();
+
+        return statistics;
     }
 
     private class TaskComapartor implements Comparator<Task>{
