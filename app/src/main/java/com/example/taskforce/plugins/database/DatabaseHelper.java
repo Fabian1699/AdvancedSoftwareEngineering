@@ -10,8 +10,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.taskforce.adapters.database.IDatabaseHelper;
-import com.example.taskforce.adapters.database.TaskObjectValues;
-import com.example.taskforce.domain.task.SubTask;
+import com.example.taskforce.adapters.database.TaskValues;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,13 +22,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
     private static final String TABLE_NAME_TASK = "task_table";
     private static final String TABLE_NAME_SUBTASK = "subtask_table";
 
-    private static final String COL_NAME = TaskObjectValues.NAME.getKey();
-    private static final String COL_ID = TaskObjectValues.ID.getKey();
-    private static final String COL_TARGET_DATE = TaskObjectValues.TARGET_DATE.getKey();
-    private static final String COL_FINISH_DATE = TaskObjectValues.FINISH_DATE.getKey();
-    private static final String COL_TIME_SPENT = TaskObjectValues.TIME_SPENT.getKey();
-    private static final String COL_FREQUENCY = TaskObjectValues.FREQUENCY.getKey();
-    private static final String COL_FINISHED = TaskObjectValues.FINISHED.getKey();
+    private static final String COL_NAME = TaskValues.NAME.getKey();
+    private static final String COL_ID = TaskValues.ID.getKey();
+    private static final String COL_TARGET_DATE = TaskValues.TARGET_DATE.getKey();
+    private static final String COL_FINISH_DATE = TaskValues.FINISH_DATE.getKey();
+    private static final String COL_TIME_SPENT = TaskValues.TIME_SPENT.getKey();
+    private static final String COL_FREQUENCY = TaskValues.FREQUENCY.getKey();
+    private static final String COL_FINISHED = TaskValues.FINISHED.getKey();
 
 
     public DatabaseHelper(@Nullable Context context) {
@@ -98,22 +97,22 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
     }
 
     @Override
-    public List<Map<TaskObjectValues, String>> getTasks(){
+    public List<Map<TaskValues, String>> getTasks(){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME_TASK;
         Cursor cursor = db.rawQuery(query, null);
 
-        List<Map<TaskObjectValues, String>> taskObjects = new ArrayList<>();
+        List<Map<TaskValues, String>> taskObjects = new ArrayList<>();
 
         while(cursor.moveToNext()) {
-            Map<TaskObjectValues, String> taskObjectValues = new HashMap<>();
-            taskObjectValues.put(TaskObjectValues.ID, cursor.getString(cursor.getColumnIndex(COL_ID)));
-            taskObjectValues.put(TaskObjectValues.NAME, cursor.getString(cursor.getColumnIndex(COL_NAME)));
-            taskObjectValues.put(TaskObjectValues.TARGET_DATE, cursor.getString(cursor.getColumnIndex(COL_TARGET_DATE)));
-            taskObjectValues.put(TaskObjectValues.FINISH_DATE, cursor.getString(cursor.getColumnIndex(COL_FINISH_DATE)));
-            taskObjectValues.put(TaskObjectValues.TIME_SPENT, cursor.getString(cursor.getColumnIndex(COL_TIME_SPENT)));
-            taskObjectValues.put(TaskObjectValues.FREQUENCY, cursor.getString(cursor.getColumnIndex(COL_FREQUENCY)));
-            taskObjectValues.put(TaskObjectValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
+            Map<TaskValues, String> taskObjectValues = new HashMap<>();
+            taskObjectValues.put(TaskValues.ID, cursor.getString(cursor.getColumnIndex(COL_ID)));
+            taskObjectValues.put(TaskValues.NAME, cursor.getString(cursor.getColumnIndex(COL_NAME)));
+            taskObjectValues.put(TaskValues.TARGET_DATE, cursor.getString(cursor.getColumnIndex(COL_TARGET_DATE)));
+            taskObjectValues.put(TaskValues.FINISH_DATE, cursor.getString(cursor.getColumnIndex(COL_FINISH_DATE)));
+            taskObjectValues.put(TaskValues.TIME_SPENT, cursor.getString(cursor.getColumnIndex(COL_TIME_SPENT)));
+            taskObjectValues.put(TaskValues.FREQUENCY, cursor.getString(cursor.getColumnIndex(COL_FREQUENCY)));
+            taskObjectValues.put(TaskValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
             taskObjects.add(taskObjectValues);
         }
         cursor.close();
@@ -121,36 +120,36 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
     }
 
     @Override
-    public Map<TaskObjectValues, String> getTask(String id){
+    public Map<TaskValues, String> getTask(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME_TASK + " WHERE " + COL_ID + " = \"" + id + "\"";
         Cursor cursor = db.rawQuery(query, null);
 
         cursor.moveToFirst();
-        Map<TaskObjectValues, String> taskObjectValues = new HashMap<>();
-        taskObjectValues.put(TaskObjectValues.ID, cursor.getString(cursor.getColumnIndex(COL_ID)));
-        taskObjectValues.put(TaskObjectValues.NAME, cursor.getString(cursor.getColumnIndex(COL_NAME)));
-        taskObjectValues.put(TaskObjectValues.TARGET_DATE, cursor.getString(cursor.getColumnIndex(COL_TARGET_DATE)));
-        taskObjectValues.put(TaskObjectValues.FINISH_DATE, cursor.getString(cursor.getColumnIndex(COL_FINISH_DATE)));
-        taskObjectValues.put(TaskObjectValues.TIME_SPENT, cursor.getString(cursor.getColumnIndex(COL_TIME_SPENT)));
-        taskObjectValues.put(TaskObjectValues.FREQUENCY, cursor.getString(cursor.getColumnIndex(COL_FREQUENCY)));
-        taskObjectValues.put(TaskObjectValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
+        Map<TaskValues, String> taskObjectValues = new HashMap<>();
+        taskObjectValues.put(TaskValues.ID, cursor.getString(cursor.getColumnIndex(COL_ID)));
+        taskObjectValues.put(TaskValues.NAME, cursor.getString(cursor.getColumnIndex(COL_NAME)));
+        taskObjectValues.put(TaskValues.TARGET_DATE, cursor.getString(cursor.getColumnIndex(COL_TARGET_DATE)));
+        taskObjectValues.put(TaskValues.FINISH_DATE, cursor.getString(cursor.getColumnIndex(COL_FINISH_DATE)));
+        taskObjectValues.put(TaskValues.TIME_SPENT, cursor.getString(cursor.getColumnIndex(COL_TIME_SPENT)));
+        taskObjectValues.put(TaskValues.FREQUENCY, cursor.getString(cursor.getColumnIndex(COL_FREQUENCY)));
+        taskObjectValues.put(TaskValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
 
         cursor.close();
         return taskObjectValues;
     }
 
-    public List<Map<TaskObjectValues, String>> getSubTasks(String id){
+    public List<Map<TaskValues, String>> getSubTasks(String id){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME_SUBTASK + " WHERE " + COL_ID + " = \"" + id + "\"";
         Cursor cursor = db.rawQuery(query, null);
 
-        List<Map<TaskObjectValues, String>> subTasksForTaskObject = new ArrayList<>();
+        List<Map<TaskValues, String>> subTasksForTaskObject = new ArrayList<>();
 
         while (cursor.moveToNext()){
-            Map<TaskObjectValues, String> subTaskValues = new HashMap<>();
-            subTaskValues.put(TaskObjectValues.NAME, cursor.getString(cursor.getColumnIndex(COL_NAME)));
-            subTaskValues.put(TaskObjectValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
+            Map<TaskValues, String> subTaskValues = new HashMap<>();
+            subTaskValues.put(TaskValues.NAME, cursor.getString(cursor.getColumnIndex(COL_NAME)));
+            subTaskValues.put(TaskValues.FINISHED, cursor.getString(cursor.getColumnIndex(COL_FINISHED)));
             subTasksForTaskObject.add(subTaskValues);
         }
         cursor.close();

@@ -1,7 +1,5 @@
 package com.example.taskforce.adapters.database;
 
-import com.example.taskforce.domain.task.SubTask;
-
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +8,11 @@ public interface IDatabaseHelper {
 
     public boolean addSubTask(String taskObjectId, String subTaskName, String isSubTaskFinished);
 
-    public List<Map<TaskObjectValues, String>> getTasks();
+    public List<Map<TaskValues, String>> getTasks();
 
-    public List<Map<TaskObjectValues, String>> getSubTasks(String id);
+    public List<Map<TaskValues, String>> getSubTasks(String id);
 
-    public Map<TaskObjectValues, String> getTask(String id);
+    public Map<TaskValues, String> getTask(String id);
 
     public void updateTaskFinished(String taskId, String finishDate, String timeSpentMinutes, String isFinished);
 

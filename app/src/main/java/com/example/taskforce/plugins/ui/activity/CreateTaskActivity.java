@@ -3,9 +3,9 @@ package com.example.taskforce.plugins.ui.activity;
 import android.os.Bundle;
 
 import com.example.taskforce.adapters.database.TaskDAO;
+import com.example.taskforce.adapters.database.TaskValues;
 import com.example.taskforce.application.TaskRepository;
 import com.example.taskforce.domain.task.Frequency;
-import com.example.taskforce.application.TaskFactory;
 import com.example.taskforce.domain.task.Task;
 import com.example.taskforce.plugins.database.DatabaseHelper;
 import com.example.taskforce.plugins.ui.util.ListViewSizeUtil;
@@ -28,7 +28,9 @@ import com.example.taskforce.R;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -129,22 +131,17 @@ public class CreateTaskActivity extends AppCompatActivity {
     }
 
     private boolean save(){
-        TaskFactory fac = new TaskFactory();
-        fac.setTaskName(taskName.getText().toString());
-        try {
-            Frequency freq = Frequency.fromKey((String) taskFrequency.getAdapter().getItem(taskFrequency.getSelectedItemPosition()));
-            fac.setFrequency(freq);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        Map<TaskValues, String> taskValues = new HashMap<>();
+        taskValues.put(TaskValues.NAME, taskName.getText().toString());
+        taskValues.put(TaskValues.TARGET_DATE, TaskDAO.getStringForDate(
+                Date.from(Instant.ofEpochMilli(calendar.getDate()))));
+        taskValues.put(TaskValues.FREQUENCY, (String) taskFrequency.getAdapter()
+                .getItem(taskFrequency.getSelectedItemPosition()));
 
-        fac.setTargetDate(Date.from(Instant.ofEpochMilli(calendar.getDate())));
-        fac.setSubTasksFromString(subTaskNames);
-        Optional<Task> task = fac.build();
+        TaskDAO dao = new TaskDAO(new DatabaseHelper(getBaseContext()));
+        Optional<Task> task = dao.generateTaskFromStringValues(taskValues, subTaskNames);
         if(task.isPresent()){
-            new TaskRepository(new TaskDAO(new DatabaseHelper(getBaseContext()))).add(task.get());
-            return true;
+            return dao.saveTaskToDatabase(task.get());
         }
         return false;
     }

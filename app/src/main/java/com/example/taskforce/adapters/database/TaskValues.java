@@ -1,6 +1,6 @@
 package com.example.taskforce.adapters.database;
 
-public enum TaskObjectValues {
+public enum TaskValues {
     NAME("name"),
     ID("id"),
     TARGET_DATE("target_date"),
@@ -11,7 +11,7 @@ public enum TaskObjectValues {
 
     private final String key;
 
-    private TaskObjectValues(String key){
+    private TaskValues(String key){
         this.key = key;
     }
 
@@ -19,8 +19,8 @@ public enum TaskObjectValues {
         return this.key;
     }
 
-    public static TaskObjectValues fromKey(String key) throws Exception {
-        for(TaskObjectValues value: TaskObjectValues.values()){
+    public static TaskValues fromKey(String key) throws Exception {
+        for(TaskValues value: TaskValues.values()){
             if(value.getKey().equals(key)){
                 return value;
             }
