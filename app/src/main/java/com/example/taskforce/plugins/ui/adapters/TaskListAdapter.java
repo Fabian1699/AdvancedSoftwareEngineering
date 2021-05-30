@@ -26,18 +26,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TaskListAdapter extends BaseAdapter {
     Context context;
     private static LayoutInflater inflater = null;
     private final TaskRepository repository;
+    private final boolean openTasks;
 
     private Map<Integer, Map<UUID, View>> views = new HashMap<>();
 
     public TaskListAdapter(Context context, TaskRepository repository, boolean openTasks) {
         this.context = context;
         this.repository = repository;
+        this.openTasks=openTasks;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -45,14 +48,7 @@ public class TaskListAdapter extends BaseAdapter {
     }
 
     private void generateViews(TaskRepository repository, LayoutInflater inflater, boolean openTasks) {
-        List<Task> tasks = new ArrayList<>();
-
-        if(openTasks) {
-            tasks = repository.getAllOpenTasks();
-        }else {
-            tasks = repository.getAllFinishedTasks();
-        }
-
+        List<Task> tasks = getTasksToDisplay();
 
         int count = 0;
         for(Task task:tasks) {
@@ -140,6 +136,13 @@ public class TaskListAdapter extends BaseAdapter {
 
     }
 
+    private List<Task> getTasksToDisplay(){
+        if(openTasks) {
+            return repository.getAllOpenTasks();
+        }
+        return repository.getAllFinishedTasks();
+    }
+
     @Override
     public int getCount() {
         return views.size();
@@ -162,33 +165,34 @@ public class TaskListAdapter extends BaseAdapter {
 
     @Override
     public void notifyDataSetChanged() {
-        views.clear();
-        generateViews(repository, inflater, false);
-        super.notifyDataSetChanged();
-
-
-        /*
-        if(views.size()!=views.size()){
+        if(getTasksToDisplay().size()!=views.size()){
+            views.clear();
+            generateViews(repository,inflater, openTasks);
             super.notifyDataSetChanged();
             return;
         }
-        List<Task> tasks = repository.getAllOpenTasks();
-        for(int i=0; i<data.size(); i++){
-            Task task = tasks.get(i);
-            View v = views.get(i).get(task.getId());
-            if(views ==null){
-                v = getView(i,null, null);
-            }else{
+
+        views.entrySet().stream().forEach(e -> {
+            Map.Entry entry = e.getValue().entrySet().stream().findFirst().get();
+            View v = (View) entry.getValue();
+
+            Optional<Task> taskOpt = repository.find((UUID)entry.getKey());
+
+            if(taskOpt.isPresent()) {
+                Task task = taskOpt.get();
                 TextView name = v.findViewById(R.id.taskViewName);
                 CheckBox check = v.findViewById(R.id.taskViewCheck);
                 ProgressBar progress = v.findViewById(R.id.taskViewProgress);
                 ListView lvSubTasks = v.findViewById(R.id.lv_subtasks);
 
-                //lvSubTasks.setAdapter(new SubTaskListAdapter(context, taskObj));
                 name.setText(task.getTaskObjectCopy().getTaskBase().getName());
-                progress.setProgress(calcProgressForTask(taskObj), true);
+                progress.setProgress((int) (task.progress() * 100), true);
+                check.setChecked(task.isFinished());
+                //((SubTaskListAdapter) lvSubTasks.getAdapter()).notifyDataSetChanged();
             }
-        }*/
+        });
+        super.notifyDataSetChanged();
+
 
     }
 

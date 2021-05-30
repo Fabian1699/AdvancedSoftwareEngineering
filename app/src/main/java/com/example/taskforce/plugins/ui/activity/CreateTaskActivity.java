@@ -140,8 +140,10 @@ public class CreateTaskActivity extends AppCompatActivity {
 
         TaskDAO dao = new TaskDAO(new DatabaseHelper(getBaseContext()));
         Optional<Task> task = dao.generateTaskFromStringValues(taskValues, subTaskNames);
+        TaskRepository repository = new TaskRepository(dao);
         if(task.isPresent()){
-            return dao.saveTaskToDatabase(task.get());
+            repository.add(task.get());
+            return true;
         }
         return false;
     }
