@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.taskforce.R;
 import com.example.taskforce.adapters.database.TaskDAO;
+import com.example.taskforce.application.StatisticService;
 import com.example.taskforce.application.TaskRepository;
 import com.example.taskforce.domain.task.TaskObject;
 import com.example.taskforce.plugins.ui.adapters.TaskListAdapter;
@@ -74,20 +75,24 @@ public class OpenTasksFragment extends Fragment {
         TaskDAO taskDAO = new TaskDAO(databaseHelper);
         TaskRepository repository = new TaskRepository(taskDAO);
 
-        adapter = new TaskListAdapter(getContext(), repository, index==0);
-        ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
-        lvDailyTasks.setAdapter(adapter);
+        if(index<2) {
+            adapter = new TaskListAdapter(getContext(), repository, index == 0);
+            ListView lvDailyTasks = root.findViewById(R.id.taskListDaily);
+            lvDailyTasks.setAdapter(adapter);
 
 
-        root.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateTaskListView(adapter);
-                ListViewSizeUtil.setListViewHeightBasedOnChildren(lvDailyTasks);
-            }
-        });
+            root.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateTaskListView(adapter);
+                    ListViewSizeUtil.setListViewHeightBasedOnChildren(lvDailyTasks);
+                }
+            });
 
-        ListViewSizeUtil.setListViewHeightBasedOnChildren(lvDailyTasks);
+            ListViewSizeUtil.setListViewHeightBasedOnChildren(lvDailyTasks);
+        }else{
+            //StatisticService statService = new StatisticService(repository);
+        }
 
         return root;
     }

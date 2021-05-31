@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class Statistic {
     private final String taskName;
-    private final double timeSpentMinutes;
+    private final int timeSpentMinutes;
     private final double timePercentage;
 
-    public Statistic(String taskName, double timeSpentMinutes, double timePercentage) {
+    public Statistic(String taskName, int timeSpentMinutes, double timePercentage) {
         this.taskName = taskName;
         this.timeSpentMinutes = timeSpentMinutes;
         this.timePercentage = timePercentage;
@@ -17,7 +17,7 @@ public class Statistic {
         return taskName;
     }
 
-    public double getTimeSpentMinutes() {
+    public int getTimeSpentMinutes() {
         return timeSpentMinutes;
     }
 
