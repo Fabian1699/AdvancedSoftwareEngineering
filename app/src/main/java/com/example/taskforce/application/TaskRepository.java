@@ -43,6 +43,11 @@ public class TaskRepository implements ITaskRepository {
     }
 
     @Override
+    public void deleteTask(UUID taskId){
+        taskObjectDAO.deleteTaskFromDatabase(taskId);
+    }
+
+    @Override
     public void add(Task task) {
         taskObjectDAO.saveTaskToDatabase(task);
     }

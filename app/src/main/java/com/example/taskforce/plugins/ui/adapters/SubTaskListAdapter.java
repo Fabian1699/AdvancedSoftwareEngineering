@@ -22,19 +22,20 @@ import java.util.UUID;
 
 public class SubTaskListAdapter extends BaseAdapter {
     private final UUID taskId;
+    private final boolean openTasks;
     private static LayoutInflater inflater = null;
     private Map<Integer, Map<String, View>> views = new HashMap<>();
     private final TaskRepository repository;
 
-    public SubTaskListAdapter(UUID taskId, TaskRepository repository, LayoutInflater inflater) {
+    public SubTaskListAdapter(UUID taskId, TaskRepository repository, LayoutInflater inflater, boolean openTasks) {
         this.repository = repository;
         this.taskId = taskId;
         this.inflater = inflater;
-
-        generateViews(taskId, repository, inflater);
+        this.openTasks= openTasks;
+        generateViews();
     }
 
-    private void generateViews(UUID taskId, TaskRepository repository, LayoutInflater inflater) {
+    private void generateViews() {
         int count =0;
         Optional<Task> task  = repository.find(taskId);
         if(task.isPresent()){
@@ -45,23 +46,27 @@ public class SubTaskListAdapter extends BaseAdapter {
                 name.setText(sub.getTaskName());
                 check.setChecked(sub.isFinished());
 
-                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    private String subTaskName = sub.getTaskName();
+                if(openTasks) {
+                    check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        private String subTaskName = sub.getTaskName();
 
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                        Optional<Task> taskOpt  = repository.find(taskId);
-                        if(taskOpt.isPresent()){
-                            Task task = taskOpt.get();
-                            task.finishSubTask(subTaskName);
-                            repository.updateTask(task);
+                            Optional<Task> taskOpt = repository.find(taskId);
+                            if (taskOpt.isPresent()) {
+                                Task task = taskOpt.get();
+                                task.finishSubTask(subTaskName);
+                                repository.updateTask(task);
+                            }
+
+                            View listViewParent = ((View) buttonView.getParent().getParent().getParent());
+                            listViewParent.callOnClick();
                         }
-
-                        View listViewParent = ((View) buttonView.getParent().getParent().getParent());
-                        listViewParent.callOnClick();
-                    }
-                });
+                    });
+                }else{
+                    check.setEnabled(false);
+                }
                 Map<String, View> subTaskView = new HashMap<>();
                 subTaskView.put(sub.getTaskName(), v);
 
@@ -94,7 +99,7 @@ public class SubTaskListAdapter extends BaseAdapter {
     @Override
     public void notifyDataSetChanged() {
         views.clear();
-        generateViews(taskId, repository, inflater);
+        generateViews();
         super.notifyDataSetChanged();
     }
 }

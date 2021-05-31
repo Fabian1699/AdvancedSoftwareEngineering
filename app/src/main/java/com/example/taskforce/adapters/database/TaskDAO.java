@@ -67,7 +67,7 @@ public class TaskDAO implements ITaskDAO {
             e.printStackTrace();
         }
 
-        if(subTasks.isEmpty()) {
+        if(subTasks.isEmpty() && objId!=null) {
             List<Map<TaskValues, String>> subTasksWithStringValues = dbHelper.getSubTasks(objId.toString());
             fac.setSubTasks(subTasksWithStringValues.stream()//
                     .map(sub -> generateSubTaskFromStringValues(sub))//

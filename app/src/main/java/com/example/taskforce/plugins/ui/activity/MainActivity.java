@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), CreateTaskActivity.class);
-                //intent.putExtra(EXTRA_MESSAGE, message);
                 startActivity(intent);
                 System.out.println();
             }
@@ -48,29 +47,4 @@ public class MainActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState, persistentState);
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v.getId()==R.id.deleteTask){
-            menu.add(Menu.NONE, 0, 0 , "löschen");
-        }
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //Adapteritem.getMenuInfo();
-        switch (item.getItemId()) {
-            case 0:
-                /*
-                View taskLayout =(View) button.getParent().getParent();
-                ListView taskListView = (ListView) taskLayout.getParent();
-                TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
-                TaskObjectDAO.deleteTaskFromDatabase(context, obj.getId());
-
-                 */
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 }

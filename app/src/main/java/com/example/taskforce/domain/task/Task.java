@@ -60,12 +60,12 @@ public class Task {
 
     public void finishSubTask(String name){
         SubTask subTaskToFinish = new SubTask(name, false);
-        SubTask subTaskFinished = new SubTask(name, true);
+        SubTask finishedSubTask = new SubTask(name, true);
         if(subTasks.contains(subTaskToFinish)){
             subTasks.remove(subTaskToFinish);
             subTasks.add(new SubTask(subTaskToFinish.getTaskName(), true));
-        }else if(subTasks.contains(subTaskFinished)){
-            subTasks.remove(subTaskToFinish);
+        }else if(subTasks.contains(finishedSubTask)){
+            subTasks.remove(finishedSubTask);
             subTasks.add(new SubTask(subTaskToFinish.getTaskName(), false));
         }
     }

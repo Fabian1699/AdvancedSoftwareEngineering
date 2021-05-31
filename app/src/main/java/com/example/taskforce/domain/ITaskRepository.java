@@ -19,4 +19,6 @@ public interface ITaskRepository {
 
     public void add(Task task);
 
+    public void deleteTask(UUID taskId);
+
 }

@@ -72,21 +72,16 @@ public class TaskListAdapter extends BaseAdapter {
             progress.setProgress((int)(task.progress()*100), true);
             check.setChecked(task.isFinished());
 
-            SubTaskListAdapter adapter = new SubTaskListAdapter(task.getId(), repository, inflater);
+            SubTaskListAdapter adapter = new SubTaskListAdapter(task.getId(), repository, inflater, openTasks);
             lvSubTasks.setAdapter(adapter);
+            check.setEnabled(openTasks);
 
             deleteTask.setOnClickListener(new View.OnClickListener() {
+                private UUID taskId = task.getId();
                 @Override
                 public void onClick(View button) {
-                    //MenuInflater menuInflater = new MenuInflater(context);
-                    //menuInflater.inflate(R.menu.task_menu, );
-                        /*
-                        View taskLayout =(View) button.getParent().getParent();
-                        ListView taskListView = (ListView) taskLayout.getParent();
-                        TaskObject obj = data.get(taskListView.getPositionForView(taskLayout));
-                        TaskObjectDAO.deleteTaskFromDatabase(context, obj.getId());
-
-                         */
+                    repository.deleteTask(taskId);
+                    notifyDataSetChanged();
                 }
             });
 
@@ -188,12 +183,9 @@ public class TaskListAdapter extends BaseAdapter {
                 name.setText(task.getTaskObjectCopy().getTaskBase().getName());
                 progress.setProgress((int) (task.progress() * 100), true);
                 check.setChecked(task.isFinished());
-                //((SubTaskListAdapter) lvSubTasks.getAdapter()).notifyDataSetChanged();
             }
         });
         super.notifyDataSetChanged();
-
-
     }
 
 }

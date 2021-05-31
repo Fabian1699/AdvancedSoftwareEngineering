@@ -230,10 +230,6 @@ public class StatisticServiceTest {
         assertEquals(5, stats.get(0).getTimeSpentMinutes());
     }
 
-
-
-
-
     private Map<TaskValues, String> getTask(String taskName, int timeSpent, boolean finished){
         Map<TaskValues, String> taskObjectValues = new HashMap<>();
         taskObjectValues.put(TaskValues.ID, UUID.randomUUID().toString());
