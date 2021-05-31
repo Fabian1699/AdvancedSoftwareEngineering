@@ -6,11 +6,13 @@ import com.example.taskforce.domain.task.Frequency;
 import com.example.taskforce.domain.task.SubTask;
 import com.example.taskforce.domain.task.Task;
 import com.example.taskforce.domain.task.TaskBase;
+import com.example.taskforce.domain.task.TaskFinish;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,14 +46,13 @@ public class TaskDAO implements ITaskDAO {
     public Optional<Task> generateTaskFromStringValues(Map<TaskValues, String> taskObjectWithStringValues, Set<String> subTasks) {
         TaskFactory fac = new TaskFactory();
 
-        String name = taskObjectWithStringValues.getOrDefault(TaskValues.NAME, null);
-        String objId = taskObjectWithStringValues.getOrDefault(TaskValues.ID, null);
-        String targetDate = taskObjectWithStringValues.getOrDefault(TaskValues.TARGET_DATE, null);
-        String finishDate = taskObjectWithStringValues.getOrDefault(TaskValues.FINISH_DATE, null);
-        String frequency = taskObjectWithStringValues.getOrDefault(TaskValues.FREQUENCY, null);
-        String timeSpentMinutes = taskObjectWithStringValues.getOrDefault(TaskValues.TIME_SPENT, null);
-        String finished = taskObjectWithStringValues.getOrDefault(TaskValues.FINISHED, null);
-
+        String name = taskObjectWithStringValues.get(TaskValues.NAME);
+        String objId = taskObjectWithStringValues.get(TaskValues.ID);
+        String targetDate = taskObjectWithStringValues.get(TaskValues.TARGET_DATE);
+        String finishDate = taskObjectWithStringValues.get(TaskValues.FINISH_DATE);
+        String frequency = taskObjectWithStringValues.get(TaskValues.FREQUENCY);
+        String timeSpentMinutes = taskObjectWithStringValues.get(TaskValues.TIME_SPENT);
+        String finished = taskObjectWithStringValues.get(TaskValues.FINISHED);
 
         if(name!=null){fac.setTaskName(name);}
         if(objId!=null){fac.setId(UUID.fromString(objId));}
@@ -86,20 +87,25 @@ public class TaskDAO implements ITaskDAO {
 
     public boolean saveTaskToDatabase(Task task){
         TaskBase taskBase = task.getTaskObjectCopy().getTaskBase();
+        TaskFinish taskFinish = task.getTaskObjectCopy().getTaskFinish();
 
-        boolean worked = dbHelper.addTask(
-                task.getId().toString(),
-                taskBase.getName(),
-                getStringForDate(taskBase.getTargetDate()),
-                getStringForDate(taskBase.getTargetDate()),
-              //  new SimpleDateFormat("yyyy-MM-dd").format(task.getFinishDate()),
-              //  String.valueOf(task.getTimeSpentMinutes()),
-                String.valueOf(0),
-                taskBase.getFrequency().getKey(),
-                String.valueOf(task.isFinished()));
+        Map<TaskValues, String> taskValues = new HashMap<>();
+        taskValues.put(TaskValues.ID,  task.getId().toString());
+        taskValues.put(TaskValues.NAME, taskBase.getName());
+        taskValues.put(TaskValues.TARGET_DATE, getStringForDate(taskBase.getTargetDate()));
+        taskValues.put(TaskValues.FINISH_DATE, getStringForDate(taskFinish.getFinishDate()));
+        taskValues.put(TaskValues.TIME_SPENT, String.valueOf(taskFinish.getTimeSpentMinutes()));
+        taskValues.put(TaskValues.FREQUENCY, taskBase.getFrequency().getKey());
+        taskValues.put(TaskValues.FINISHED, String.valueOf(task.isFinished()));
+
+        boolean worked = dbHelper.addTask(taskValues);
 
         for(SubTask sub: task.getSubTasks()){
-            worked &= dbHelper.addSubTask(task.getId().toString(), sub.getTaskName(), String.valueOf(sub.isFinished()));
+            Map<TaskValues, String> subTaskValues = new HashMap<>();
+            subTaskValues.put(TaskValues.ID,  task.getId().toString());
+            subTaskValues.put(TaskValues.NAME, sub.getTaskName());
+            subTaskValues.put(TaskValues.FINISHED, String.valueOf(sub.isFinished()));
+            worked &= dbHelper.addSubTask(subTaskValues);
         }
         return worked;
     }
@@ -115,13 +121,6 @@ public class TaskDAO implements ITaskDAO {
     public void updateTask(Task task){
         dbHelper.deleteTask(task.getId().toString());
         saveTaskToDatabase(task);
-/*        dbHelper.updateTaskFinished(
-                taskObject.getId().toString(),
-                new SimpleDateFormat("yyyy-MM-dd").format(taskObject.getFinishDate()),
-                String.valueOf(taskObject.getTimeSpentMinutes()),
-                String.valueOf(taskObject.isFinished()));
-
- */
     }
 
     public void updateSubTask(UUID taskId, SubTask subTask){

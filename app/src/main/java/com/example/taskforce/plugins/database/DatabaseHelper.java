@@ -70,28 +70,28 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHelper 
     }
 
     @Override
-    public boolean addTask(String taskObjectId, String taskName, String targetDate, String finishDate, String timeSpentMinutes, String frequency, String isFinished){
+    public boolean addTask(Map<TaskValues, String> taskValues){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_ID, taskObjectId);
-        contentValues.put(COL_NAME, taskName);
-        contentValues.put(COL_TARGET_DATE, targetDate);
-        contentValues.put(COL_FINISH_DATE, finishDate);
-        contentValues.put(COL_TIME_SPENT, timeSpentMinutes);
-        contentValues.put(COL_FREQUENCY, frequency);
-        contentValues.put(COL_FINISHED, isFinished);
+        contentValues.put(COL_ID, taskValues.get(TaskValues.ID));
+        contentValues.put(COL_NAME, taskValues.get(TaskValues.NAME));
+        contentValues.put(COL_TARGET_DATE, taskValues.get(TaskValues.TARGET_DATE));
+        contentValues.put(COL_FINISH_DATE, taskValues.get(TaskValues.FINISH_DATE));
+        contentValues.put(COL_TIME_SPENT, taskValues.get(TaskValues.TIME_SPENT));
+        contentValues.put(COL_FREQUENCY, taskValues.get(TaskValues.FREQUENCY));
+        contentValues.put(COL_FINISHED, taskValues.get(TaskValues.FINISHED));
 
         boolean result = db.insert(TABLE_NAME_TASK, null, contentValues) !=-1;
         return result;
     }
 
     @Override
-    public boolean addSubTask(String taskObjectId, String subTaskName, String isSubTaskFinished){
+    public boolean addSubTask(Map<TaskValues, String> taskValues){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_ID, taskObjectId);
-        contentValues.put(COL_NAME, subTaskName);
-        contentValues.put(COL_FINISHED, isSubTaskFinished);
+        contentValues.put(COL_ID, taskValues.get(TaskValues.ID));
+        contentValues.put(COL_NAME, taskValues.get(TaskValues.NAME));
+        contentValues.put(COL_FINISHED, taskValues.get(TaskValues.FINISHED));
         boolean result = db.insert(TABLE_NAME_SUBTASK, null, contentValues)!=-1;
         return result;
     }

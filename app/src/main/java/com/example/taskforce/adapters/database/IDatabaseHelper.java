@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface IDatabaseHelper {
-    public boolean addTask(String taskObjectId, String taskName, String targetDate, String finishDate, String timeSpentMinutes, String frequency, String isFinished);
+    public boolean addTask(Map<TaskValues, String> taskValues);
 
-    public boolean addSubTask(String taskObjectId, String subTaskName, String isSubTaskFinished);
+    public boolean addSubTask(Map<TaskValues, String> taskValues);
 
     public List<Map<TaskValues, String>> getTasks();
 
